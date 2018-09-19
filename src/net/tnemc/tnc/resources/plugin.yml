@@ -1,0 +1,10 @@
+#General Data
+name: TheNewChat
+version: 0.0.0.1
+description: A chat management plugin for non-player made chat channels. With TNK and Towny Support.
+author: creatorfromhell
+api-version: 1.13
+
+#Plugin Data
+main: net.tnemc.tnc.core.TheNewChat
+softdepend: [Towny, TheNewEconomy]
