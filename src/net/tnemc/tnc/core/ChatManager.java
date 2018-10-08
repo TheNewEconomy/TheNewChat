@@ -3,7 +3,9 @@ package net.tnemc.tnc.core;
 import net.tnemc.tnc.core.common.chat.ChatEntry;
 import net.tnemc.tnc.core.common.chat.ChatHandler;
 import net.tnemc.tnc.core.common.chat.ChatVariable;
+import net.tnemc.tnc.core.common.chat.handlers.TownyHandler;
 import net.tnemc.tnc.core.common.configuration.CoreConfigNodes;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -51,6 +53,12 @@ public class ChatManager implements Listener {
     loadChats();
   }
 
+  public void loadHandlers() {
+    if(Bukkit.getPluginManager().isPluginEnabled("Towny")) {
+      addHandler(new TownyHandler());
+    }
+  }
+
   public void loadChats() {
     final String baseNode = "Core.Chats";
     Set<String> chatConfigs = ConfigurationManager.getConfigurationSection("config.yml", baseNode).getKeys(false);
@@ -91,7 +99,7 @@ public class ChatManager implements Listener {
            !handlers.containsKey(generalHandler)) {
         format = parseCoreVariables(event.getPlayer(), event.getMessage(), format);
       } else {
-        format = handlers.get(handler).parseGeneral(event.getPlayer(), event.getMessage(), format);
+        format = handlers.get(handler).parseMessage(event.getPlayer(), "general", event.getMessage(), format);
       }
       final Set<Player> recipients = getRecipientsRadial(event.getRecipients(), event.getPlayer(),
                                                    CoreConfigNodes.CORE_GENERAL_CHAT_RADIAL.getBoolean(),
@@ -103,7 +111,7 @@ public class ChatManager implements Listener {
     } else {
       ChatEntry entry = chats.get(handler).get(channel);
       String format = entry.getFormat();
-      final Set<Player> recipients = getRecipientsRadial(event.getRecipients(), event.getPlayer(),
+      final Set<Player> recipients = getRecipientsRadial(handlers.get(handler).getType(channel).getRecipients(event.getRecipients(), event.getPlayer()), event.getPlayer(),
                                                          entry.isRadial(),
                                                          entry.getRadius());
 
@@ -185,6 +193,7 @@ public class ChatManager implements Listener {
 
   public void addHandler(ChatHandler handler) {
     handlers.put(handler.getName(), handler);
+    handlersMap.put(handler.getTypes().keySet(), handler.getName());
   }
 
   public LinkedHashMap<String, ChatHandler> getHandlers() {

@@ -2,6 +2,8 @@ package net.tnemc.tnc.core.common.chat;
 
 import org.bukkit.entity.Player;
 
+import java.util.Set;
+
 /**
  * Created by creatorfromhell.
  *
@@ -21,8 +23,11 @@ public abstract class ChatType {
     this.name = name;
     this.defaultFormat = defaultFormat;
   }
+  public abstract Set<Player> getRecipients(Set<Player> recipients, Player player);
 
-  public abstract String handle(Player player, String message, String format);
+  public String handle(Player player, String message, String format) {
+    return format;
+  }
 
   public String getName() {
     return name;

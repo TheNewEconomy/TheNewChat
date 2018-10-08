@@ -20,14 +20,21 @@ public abstract class ChatHandler {
   protected Map<String, ChatVariable> variables = new HashMap<>();
 
   public abstract String getName();
-  public abstract String parseGeneral(final Player player, String message, String format);
 
   public String parseMessage(final Player player, final String type, String message, String format) {
     for(Map.Entry<String, ChatVariable> entry : variables.entrySet()) {
-      message = message.replaceAll(entry.getKey(), entry.getValue().parse(player, message));
+      format = format.replaceAll(entry.getKey(), entry.getValue().parse(player, message));
     }
-    if(type.equalsIgnoreCase("general")) return parseGeneral(player, message, format);
+    if(type.equalsIgnoreCase("general")) return format;
     return types.get(type).handle(player, message, format);
+  }
+
+  public void addVariable(ChatVariable variable) {
+    variables.put(variable.name(), variable);
+  }
+
+  public void addType(ChatType type) {
+    types.put(type.getName(), type);
   }
 
   public ChatType getType(String name) {
