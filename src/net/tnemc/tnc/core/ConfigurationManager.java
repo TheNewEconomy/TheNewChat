@@ -10,10 +10,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.util.logging.Level.SEVERE;
 
+/**
+ * Created by creatorfromhell.
+ *
+ * The New Chat Minecraft Server Plugin
+ *
+ * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0
+ * International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/
+ * or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
+ */
 public class ConfigurationManager {
   private static Map<String, ConfigurationEntry> configurations = new HashMap<>();
 
@@ -134,12 +144,20 @@ public class ConfigurationManager {
     return configurations.get(file).getOldConfig().contains(node);
   }
 
+  public static List<String> getStrList(String file, String node) {
+    return configurations.get(file).getOldConfig().getStringList(node);
+  }
+
   public static String getString(String file, IConfigNode node) {
     return configurations.get(file).getOldConfig().getString(node.getNode().toLowerCase(), node.getDefaultValue());
   }
 
   public static String getString(String file, String node) {
     return configurations.get(file).getOldConfig().getString(node.toLowerCase(), "");
+  }
+
+  public static boolean getBoolean(String file, String node, boolean def) {
+    return configurations.get(file).getOldConfig().getBoolean(node, def);
   }
 
   public static boolean getBoolean(String file, IConfigNode node) {
@@ -172,5 +190,9 @@ public class ConfigurationManager {
       sendError(node.toLowerCase() + " from " + file);
       return 0;
     }
+  }
+
+  public static int getInt(String file, String node, int def) {
+    return configurations.get(file).getOldConfig().getInt(node, def);
   }
 }

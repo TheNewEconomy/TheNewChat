@@ -1,6 +1,6 @@
-package net.tnemc.tnc.core;
+package net.tnemc.tnc.core.common.chat;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.entity.Player;
 
 /**
  * Created by creatorfromhell.
@@ -11,5 +11,8 @@ import org.bukkit.plugin.java.JavaPlugin;
  * International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/
  * or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
  */
-public class TheNewChat extends JavaPlugin {
+public abstract class ChatVariable {
+
+  public abstract String name();
+  public abstract String parse(Player player, String message);
 }

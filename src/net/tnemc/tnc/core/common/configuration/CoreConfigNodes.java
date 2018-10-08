@@ -2,9 +2,9 @@ package net.tnemc.tnc.core.common.configuration;
 
 
 /**
- * Created by Daniel.
+ * Created by creatorfromhell.
  *
- * The New Kings Minecraft Server Plugin
+ * The New Chat Minecraft Server Plugin
  *
  * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0
  * International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/
@@ -78,7 +78,7 @@ public enum CoreConfigNodes implements IConfigNode {
     }
   },
 
-  CORE_GENERAL_RADIUS{
+  CORE_GENERAL_CHAT_RADIUS {
     @Override
     public String getNode() {
       return "Core.GeneralChat.Radius";
@@ -97,7 +97,7 @@ public enum CoreConfigNodes implements IConfigNode {
     }
   },
 
-  CORE_GENERAL_HANDLER {
+  CORE_GENERAL_CHAT_HANDLER {
     @Override
     public String getNode() {
       return "Core.GeneralChat.Handler";
@@ -116,7 +116,7 @@ public enum CoreConfigNodes implements IConfigNode {
     }
   },
 
-  CORE_GENERAL_FORMAT {
+  CORE_GENERAL_CHAT_FORMAT {
     @Override
     public String getNode() {
       return "Core.GeneralChat.Format";
@@ -124,7 +124,7 @@ public enum CoreConfigNodes implements IConfigNode {
 
     @Override
     public String getDefaultValue() {
-      return "<gold><$username>";
+      return "<white><$username><green>: <white>$message";
     }
 
     @Override
