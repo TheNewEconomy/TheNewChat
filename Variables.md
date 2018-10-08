@@ -43,7 +43,7 @@ The core variables of The New Chat.
 | $xp       | 1.0     | Returns the player's total exp.     |
 
 ## The New Kings
-The TNK variables of The New King's Chat Handler.
+The variables for The New King's Chat Handler.
 
 | Name      | Version | Description                         |
 |-----------|:-------:|-------------------------------------|
@@ -51,3 +51,29 @@ The TNK variables of The New King's Chat Handler.
 | $kingdom  | 1.0     | Returns the player's kingdom name.  |
 | $pact     | 1.0     | Returns the player's pact name.     |
 | $title    | 1.0     | Returns the player's kingdom title. |
+
+The chat types for The New King's Chat Handler.
+
+| Name      | Version | Description                                     | 
+|-----------|:-------:|-------------------------------------------------|
+| Kingdom   |  1.0    | Chat for players in the same kingdom.           |
+| Village   |  1.0    | Chat for players in the same village.           |
+| Pact      |  1.0    | Chat for players in the same military pact.     |
+
+## Towny
+The variables for Towny's Chat Handler.
+
+| Name      | Version | Description                         |
+|-----------|:-------:|-------------------------------------|
+| $town     | 1.0     | Returns the player's town name.     |
+| $nation   | 1.0     | Returns the player's nation name.   |
+| $title    | 1.0     | Returns the player's nation title.  |
+
+The chat types for Towny's Chat Handler.
+
+| Name      | Version | Description                                     | 
+|-----------|:-------:|-------------------------------------------------|
+| Nation    |  1.0    | Chat for players in the same nation.            |
+| Town      |  1.0    | Chat for players in the same towny.             |
+| Ally      |  1.0    | Chat for players of allied nations.             |
+
