@@ -20,7 +20,7 @@ import java.util.UUID;
  */
 public class TownType extends ChatType {
   public TownType() {
-    super("town", "<aqua>$display: <white> $message");
+    super("town", "<aqua>$display: <white>$message");
   }
 
   @Override

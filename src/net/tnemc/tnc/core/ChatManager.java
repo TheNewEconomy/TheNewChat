@@ -48,8 +48,9 @@ public class ChatManager implements Listener {
 
 
   public ChatManager(String generalHandler) {
-    //TODO: Load Chat Handlers, and types.
+    this.generalHandler = generalHandler;
 
+    loadHandlers();
     loadChats();
   }
 
@@ -61,25 +62,27 @@ public class ChatManager implements Listener {
 
   public void loadChats() {
     final String baseNode = "Core.Chats";
-    Set<String> chatConfigs = ConfigurationManager.getConfigurationSection("config.yml", baseNode).getKeys(false);
-    for(String entry : chatConfigs) {
-      if(!ConfigurationManager.hasConfiguration("config.yml", baseNode + "." + entry + ".Handler") ||
-          !ConfigurationManager.hasConfiguration("config.yml", baseNode + "." + entry + ".Type")) {
-        continue;
+    if(ConfigurationManager.hasConfiguration("config.yml", baseNode)) {
+      Set<String> chatConfigs = ConfigurationManager.getConfigurationSection("config.yml", baseNode).getKeys(false);
+      for(String entry : chatConfigs) {
+        if(!ConfigurationManager.hasConfiguration("config.yml", baseNode + "." + entry + ".Handler") ||
+            !ConfigurationManager.hasConfiguration("config.yml", baseNode + "." + entry + ".Type")) {
+          continue;
+        }
+        final String handler = ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Handler");
+        final String type = ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Type");
+
+        ChatEntry chatConfig = new ChatEntry(handler, type);
+
+        List<String> commands = ConfigurationManager.getStrList("config.yml", baseNode + "." + entry + ".Commands");
+        chatConfig.setCommands(commands.toArray(new String[commands.size()]));
+        chatConfig.setRadial(ConfigurationManager.getBoolean("config.yml", baseNode + "." + entry + ".Radial", false));
+        chatConfig.setRadius(ConfigurationManager.getInt("config.yml", baseNode + "." + entry + ".Radius", 20));
+        chatConfig.setPermission(ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Permission", ""));
+        chatConfig.setFormat(ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Permission", handlers.get(handler).getType(type).getDefaultFormat()));
+
+        addChatEntry(chatConfig);
       }
-      final String handler = ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Handler");
-      final String type = ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Type");
-
-      ChatEntry chatConfig = new ChatEntry(handler, type);
-
-      List<String> commands = ConfigurationManager.getStrList("config.yml", baseNode + "." + entry + ".Commands");
-      chatConfig.setCommands(commands.toArray(new String[commands.size()]));
-      chatConfig.setRadial(ConfigurationManager.getBoolean("config.yml", baseNode + "." + entry + ".Radial", false));
-      chatConfig.setRadius(ConfigurationManager.getInt("config.yml", baseNode + "." + entry + ".Radius", 20));
-      chatConfig.setPermission(ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Permission", ""));
-      chatConfig.setFormat(ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Permission", handlers.get(handler).getType(type).getDefaultFormat()));
-
-      addChatEntry(chatConfig);
     }
   }
 
