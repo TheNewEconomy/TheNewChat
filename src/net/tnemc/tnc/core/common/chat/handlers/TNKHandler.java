@@ -1,9 +1,9 @@
 package net.tnemc.tnc.core.common.chat.handlers;
 
 import net.tnemc.tnc.core.common.chat.ChatHandler;
-import net.tnemc.tnc.core.common.chat.handlers.towny.AllyType;
-import net.tnemc.tnc.core.common.chat.handlers.towny.NationType;
-import net.tnemc.tnc.core.common.chat.handlers.towny.TownType;
+import net.tnemc.tnc.core.common.chat.handlers.tnk.KingdomType;
+import net.tnemc.tnc.core.common.chat.handlers.tnk.PactType;
+import net.tnemc.tnc.core.common.chat.handlers.tnk.VillageType;
 import net.tnemc.tnc.core.common.chat.variables.TNK.KingdomVariable;
 import net.tnemc.tnc.core.common.chat.variables.TNK.PactVariable;
 import net.tnemc.tnc.core.common.chat.variables.TNK.VillageVariable;
@@ -21,9 +21,9 @@ public class TNKHandler extends ChatHandler {
 
   public TNKHandler() {
 
-    addType(new AllyType());
-    addType(new NationType());
-    addType(new TownType());
+    addType(new PactType());
+    addType(new KingdomType());
+    addType(new VillageType());
 
     addVariable(new PactVariable());
     addVariable(new KingdomVariable());

@@ -3,6 +3,7 @@ package net.tnemc.tnc.core;
 import net.tnemc.tnc.core.common.chat.ChatEntry;
 import net.tnemc.tnc.core.common.chat.ChatHandler;
 import net.tnemc.tnc.core.common.chat.ChatVariable;
+import net.tnemc.tnc.core.common.chat.handlers.TNKHandler;
 import net.tnemc.tnc.core.common.chat.handlers.TownyHandler;
 import net.tnemc.tnc.core.common.configuration.CoreConfigNodes;
 import org.bukkit.Bukkit;
@@ -60,6 +61,10 @@ public class ChatManager implements Listener {
   }
 
   public void loadHandlers() {
+    if(Bukkit.getPluginManager().isPluginEnabled("TheNewKings")) {
+      addHandler(new TNKHandler());
+    }
+
     if(Bukkit.getPluginManager().isPluginEnabled("Towny")) {
       addHandler(new TownyHandler());
     }
