@@ -12,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -38,6 +39,10 @@ public class ChatManager implements Listener {
   private LinkedHashMap<Set<String>, String> handlersMap = new LinkedHashMap<>();
 
   private Map<String, Map<String, ChatEntry>> chats = new HashMap<>();
+
+  private Map<String, String> commands = new HashMap<>();
+
+  private Map<String, String> channels = new HashMap<>();
 
   /**
    * The core variables used
@@ -89,42 +94,59 @@ public class ChatManager implements Listener {
 
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onChat(AsyncPlayerChatEvent event) {
+    if(event.getMessage().startsWith("/")) return;
     String channel = "General";
 
-    if(event.getPlayer().hasMetadata("tnc-channel")) {
-      channel = event.getPlayer().getMetadata("tnc-channel").get(0).asString();
+    if(channels.containsKey(event.getPlayer().getUniqueId().toString())) {
+      channel = channels.get(event.getPlayer().getUniqueId().toString());
     }
+
+    Set<Player> recipients = event.getRecipients();
+    event.setFormat(formatMessage(event.getPlayer(), recipients, channel, event.getMessage()));
+  }
+
+  public String formatMessage(final Player player, Collection<Player> recipients, final String channel, final String message) {
 
     final String handler = getHandler(channel);
 
     if(handler.equalsIgnoreCase("") || channel.equalsIgnoreCase("general")) {
       String format = CoreConfigNodes.CORE_GENERAL_CHAT_FORMAT.getString();
       if(generalHandler.equalsIgnoreCase("core") ||
-           !handlers.containsKey(generalHandler)) {
-        format = parseCoreVariables(event.getPlayer(), event.getMessage(), format);
+          !handlers.containsKey(generalHandler)) {
+        format = parseCoreVariables(player, message, format);
       } else {
-        format = handlers.get(handler).parseMessage(event.getPlayer(), "general", event.getMessage(), format);
+        format = handlers.get(handler).parseMessage(player, "general", message, format);
       }
-      final Set<Player> recipients = getRecipientsRadial(event.getRecipients(), event.getPlayer(),
-                                                   CoreConfigNodes.CORE_GENERAL_CHAT_WORLD_BASED.getBoolean(),
-                                                   CoreConfigNodes.CORE_GENERAL_CHAT_RADIAL.getBoolean(),
-                                                   CoreConfigNodes.CORE_GENERAL_CHAT_RADIUS.getInt());
+      final Collection<Player> recip = getRecipientsRadial(recipients, player,
+                                                         CoreConfigNodes.CORE_GENERAL_CHAT_WORLD_BASED.getBoolean(),
+                                                         CoreConfigNodes.CORE_GENERAL_CHAT_RADIAL.getBoolean(),
+                                                         CoreConfigNodes.CORE_GENERAL_CHAT_RADIUS.getInt());
 
-      event.getRecipients().clear();
-      event.getRecipients().addAll(recipients);
-      event.setFormat(format);
+      recipients.clear();
+      recipients.addAll(recip);
+      return format;
     } else {
       ChatEntry entry = chats.get(handler).get(channel);
       String format = entry.getFormat();
-      final Set<Player> recipients = getRecipientsRadial(handlers.get(handler).getType(channel).getRecipients(event.getRecipients(), event.getPlayer()), event.getPlayer(),
+      final Collection<Player> recip = getRecipientsRadial(handlers.get(handler).getType(channel).getRecipients(recipients, player), player,
                                                          entry.isWorld(),
                                                          entry.isRadial(),
                                                          entry.getRadius());
 
-      event.getRecipients().clear();
-      event.getRecipients().addAll(recipients);
-      event.setFormat(handlers.get(handler).parseMessage(event.getPlayer(), channel, event.getMessage(), format));
+      recipients.clear();
+      recipients.addAll(recip);
+      return handlers.get(handler).parseMessage(player, channel, message, format);
     }
+  }
+
+  public void sendMessage(final Player player, Collection<Player> recipients, final String channel, final String message, boolean sendPlayer) {
+    Collection<Player> chatRecipients = recipients;
+    String format = formatMessage(player, recipients, channel, message);
+    for(Player p : chatRecipients) {
+      p.sendMessage(format);
+    }
+
+    if(sendPlayer) player.sendMessage(format);
   }
 
   private String parseCoreVariables(final Player player, String message, String format) {
@@ -134,8 +156,8 @@ public class ChatManager implements Listener {
     return format;
   }
 
-  private Set<Player> getRecipientsRadial(final Set<Player> recipients, final Player player, final boolean world, final boolean radial, final int radius) {
-    Set<Player> newRecipients = new HashSet<>();
+  private Collection<Player> getRecipientsRadial(final Collection<Player> recipients, final Player player, final boolean world, final boolean radial, final int radius) {
+    Collection<Player> newRecipients = new HashSet<>();
     if(radial) {
       for(Player p : recipients) {
         if(p.getLocation().distance(player.getLocation()) <= radius) {
@@ -171,6 +193,22 @@ public class ChatManager implements Listener {
     } else {
       chats.put(entry.getHandler(), chat);
     }
+
+    for(String command : entry.getCommands()) {
+      commands.put(command, entry.getType());
+    }
+  }
+
+  public String getChannelByCommand(String command) {
+    return commands.get(command);
+  }
+
+  public Map<String, String> getCommands() {
+    return commands;
+  }
+
+  public Map<String, String> getChannels() {
+    return channels;
   }
 
   public LinkedHashMap<Set<String>, String> getHandlersMap() {

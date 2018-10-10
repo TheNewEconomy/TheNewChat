@@ -2,7 +2,7 @@ package net.tnemc.tnc.core.common.chat;
 
 import org.bukkit.entity.Player;
 
-import java.util.Set;
+import java.util.Collection;
 
 /**
  * Created by creatorfromhell.
@@ -23,7 +23,7 @@ public abstract class ChatType {
     this.name = name;
     this.defaultFormat = defaultFormat;
   }
-  public abstract Set<Player> getRecipients(Set<Player> recipients, Player player);
+  public abstract Collection<Player> getRecipients(Collection<Player> recipients, Player player);
 
   public String handle(Player player, String message, String format) {
     return format;

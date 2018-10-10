@@ -5,8 +5,8 @@ import com.palmergames.bukkit.towny.object.TownyUniverse;
 import net.tnemc.tnc.core.common.chat.ChatType;
 import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -24,11 +24,11 @@ public class TownType extends ChatType {
   }
 
   @Override
-  public Set<Player> getRecipients(Set<Player> recipients, Player player) {
+  public Collection<Player> getRecipients(Collection<Player> recipients, Player player) {
     try {
       final UUID town = TownyUniverse.getDataSource().getResident(player.getName()).getTown().getUuid();
 
-      Set<Player> newRecipients = new HashSet<>();
+      Collection<Player> newRecipients = new HashSet<>();
 
       for(Player p : recipients) {
         if(TownyUniverse.getDataSource().getResident(p.getName()).getTown().getUuid().equals(town)) {
