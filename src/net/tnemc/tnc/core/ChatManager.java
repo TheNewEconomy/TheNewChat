@@ -76,6 +76,7 @@ public class ChatManager implements Listener {
 
         List<String> commands = ConfigurationManager.getStrList("config.yml", baseNode + "." + entry + ".Commands");
         chatConfig.setCommands(commands.toArray(new String[commands.size()]));
+        chatConfig.setWorld(ConfigurationManager.getBoolean("config.yml", baseNode + "." + entry + ".WorldBased", false));
         chatConfig.setRadial(ConfigurationManager.getBoolean("config.yml", baseNode + "." + entry + ".Radial", false));
         chatConfig.setRadius(ConfigurationManager.getInt("config.yml", baseNode + "." + entry + ".Radius", 20));
         chatConfig.setPermission(ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Permission", ""));
@@ -105,6 +106,7 @@ public class ChatManager implements Listener {
         format = handlers.get(handler).parseMessage(event.getPlayer(), "general", event.getMessage(), format);
       }
       final Set<Player> recipients = getRecipientsRadial(event.getRecipients(), event.getPlayer(),
+                                                   CoreConfigNodes.CORE_GENERAL_CHAT_WORLD_BASED.getBoolean(),
                                                    CoreConfigNodes.CORE_GENERAL_CHAT_RADIAL.getBoolean(),
                                                    CoreConfigNodes.CORE_GENERAL_CHAT_RADIUS.getInt());
 
@@ -115,6 +117,7 @@ public class ChatManager implements Listener {
       ChatEntry entry = chats.get(handler).get(channel);
       String format = entry.getFormat();
       final Set<Player> recipients = getRecipientsRadial(handlers.get(handler).getType(channel).getRecipients(event.getRecipients(), event.getPlayer()), event.getPlayer(),
+                                                         entry.isWorld(),
                                                          entry.isRadial(),
                                                          entry.getRadius());
 
@@ -131,7 +134,7 @@ public class ChatManager implements Listener {
     return format;
   }
 
-  private Set<Player> getRecipientsRadial(final Set<Player> recipients, final Player player, final boolean radial, final int radius) {
+  private Set<Player> getRecipientsRadial(final Set<Player> recipients, final Player player, final boolean world, final boolean radial, final int radius) {
     Set<Player> newRecipients = new HashSet<>();
     if(radial) {
       for(Player p : recipients) {
@@ -140,7 +143,15 @@ public class ChatManager implements Listener {
         }
       }
     } else {
-      newRecipients = recipients;
+      if(world) {
+        for(Player p : recipients) {
+          if(p.getWorld().getUID().equals(player.getWorld().getUID())) {
+            newRecipients.add(p);
+          }
+        }
+      } else {
+        newRecipients = recipients;
+      }
     }
     return newRecipients;
   }

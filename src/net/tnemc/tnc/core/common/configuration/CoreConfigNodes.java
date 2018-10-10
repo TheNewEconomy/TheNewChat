@@ -59,6 +59,25 @@ public enum CoreConfigNodes implements IConfigNode {
     }
   },
 
+  CORE_GENERAL_CHAT_WORLD_BASED {
+    @Override
+    public String getNode() {
+      return "Core.GeneralChat.WorldBased";
+    }
+
+    @Override
+    public String getDefaultValue() {
+      return "false";
+    }
+
+    @Override
+    public String[] getComments() {
+      return new String[] {
+          "Whether or not general chat should be between players in the same world."
+      };
+    }
+  },
+
   CORE_GENERAL_CHAT_RADIAL {
     @Override
     public String getNode() {

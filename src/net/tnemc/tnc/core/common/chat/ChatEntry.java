@@ -14,6 +14,7 @@ public class ChatEntry {
   private String type;
   private String[] commands = new String[0];
   private String permission = "";
+  private boolean world = false;
   private boolean radial = false;
   private int radius = 20;
   private String format = "";
@@ -53,6 +54,14 @@ public class ChatEntry {
 
   public void setPermission(String permission) {
     this.permission = permission;
+  }
+
+  public boolean isWorld() {
+    return world;
+  }
+
+  public void setWorld(boolean world) {
+    this.world = world;
   }
 
   public boolean isRadial() {
