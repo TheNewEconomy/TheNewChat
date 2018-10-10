@@ -154,6 +154,20 @@ public enum CoreConfigNodes implements IConfigNode {
           "https://github.com/TheNewEconomy/TheNewChat/blob/master/Variables.md"
       };
     }
+  },
+
+  CORE_CHATS {
+    @Override
+    public String getNode() {
+      return "Core.Chats";
+    }
+
+    @Override
+    public String[] getComments() {
+      return new String[] {
+          "Holds all chats."
+      };
+    }
   };
 
   @Override
