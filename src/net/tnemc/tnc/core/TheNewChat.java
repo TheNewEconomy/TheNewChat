@@ -2,6 +2,7 @@ package net.tnemc.tnc.core;
 
 import net.tnemc.tnc.core.command.ChatCommand;
 import net.tnemc.tnc.core.command.CommandManager;
+import net.tnemc.tnc.core.command.IgnoreCommand;
 import net.tnemc.tnc.core.command.TNECommand;
 import net.tnemc.tnc.core.common.configuration.ConfigurationEntry;
 import net.tnemc.tnc.core.common.configuration.CoreConfigNodes;
@@ -72,6 +73,7 @@ public class TheNewChat extends JavaPlugin {
     final String[] commandsArray = commands.toArray(new String[commands.size()]);
 
     registerCommand(commandsArray, new ChatCommand(this, commandsArray));
+    registerCommand(new String[] { "ignorec", "igc", "ignorechannel" }, new IgnoreCommand(this));
     registerListener(manager);
   }
 

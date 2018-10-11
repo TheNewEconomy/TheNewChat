@@ -29,6 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * Created by creatorfromhell.
@@ -53,6 +54,7 @@ public class ChatManager implements Listener {
   private Map<String, String> commands = new HashMap<>();
 
   private Map<String, String> channels = new HashMap<>();
+  private Map<String, HashSet<String>> ignored = new HashMap<>();
 
   /**
    * The core variables used
@@ -107,6 +109,7 @@ public class ChatManager implements Listener {
 
         List<String> commands = TheNewChat.instance().getChatsConfiguration().getStringList(baseNode + "." + entry + ".Commands");
         chatConfig.setCommands(commands.toArray(new String[commands.size()]));
+        chatConfig.setIgnorable(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".Ignorable", true));
         chatConfig.setWorld(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".WorldBased", false));
         chatConfig.setRadial(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".Radial", false));
         chatConfig.setRadius(TheNewChat.instance().getChatsConfiguration().getInt(baseNode + "." + entry + ".Radius", 20));
@@ -149,10 +152,11 @@ public class ChatManager implements Listener {
           handlers.containsKey(generalHandler)) {
         format = handlers.get(handler).parseMessage(player, "general", message, format);
       }
-      final Collection<Player> recip = getRecipientsRadial(recipients, player,
-                                                         CoreConfigNodes.CORE_GENERAL_CHAT_WORLD_BASED.getBoolean(),
-                                                         CoreConfigNodes.CORE_GENERAL_CHAT_RADIAL.getBoolean(),
-                                                         CoreConfigNodes.CORE_GENERAL_CHAT_RADIUS.getInt());
+      final Collection<Player> recip = getRecipients(recipients, player,
+                                                     CoreConfigNodes.CORE_GENERAL_CHAT_WORLD_BASED.getBoolean(),
+                                                     CoreConfigNodes.CORE_GENERAL_CHAT_RADIAL.getBoolean(),
+                                                     CoreConfigNodes.CORE_GENERAL_CHAT_RADIUS.getInt(),
+                                                     "tnc.general", "general");
 
       recipients.clear();
       recipients.addAll(recip);
@@ -163,10 +167,12 @@ public class ChatManager implements Listener {
       if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
         format = PlaceholderAPI.setPlaceholders(player, format);
       }
-      final Collection<Player> recip = getRecipientsRadial(handlers.get(handler).getType(channel).getRecipients(recipients, player), player,
-                                                         entry.isWorld(),
-                                                         entry.isRadial(),
-                                                         entry.getRadius());
+      final Collection<Player> recip = getRecipients(handlers.get(handler).getType(channel).getRecipients(recipients, player), player,
+                                                     entry.isWorld(),
+                                                     entry.isRadial(),
+                                                     entry.getRadius(),
+                                                     entry.getPermission(),
+                                                     entry.getType());
 
       recipients.clear();
       recipients.addAll(recip);
@@ -190,26 +196,22 @@ public class ChatManager implements Listener {
     return Message.replaceColours(format, false);
   }
 
-  private Collection<Player> getRecipientsRadial(final Collection<Player> recipients, final Player player, final boolean world, final boolean radial, final int radius) {
+  private Collection<Player> getRecipients(final Collection<Player> recipients, final Player player,
+                                           final boolean world, final boolean radial, final int radius,
+                                           final String permission, final String channel) {
     Collection<Player> newRecipients = new HashSet<>();
-    if(radial) {
-      for(Player p : recipients) {
-        if(p.getLocation().distance(player.getLocation()) <= radius) {
-          newRecipients.add(p);
-        }
+
+    for(Player p : recipients) {
+      if(!p.hasPermission(permission)) continue;
+      if(ignored.containsKey(channel) && ignored.get(channel).contains(p.getUniqueId().toString())) continue;
+      if(radial) {
+        if(p.getLocation().distance(player.getLocation()) <= radius) continue;
       }
-    } else {
+
       if(world) {
-        System.out.println("world-based recipients");
-        for(Player p : recipients) {
-          if(p.getWorld().getUID().equals(player.getWorld().getUID())) {
-            newRecipients.add(p);
-          }
-        }
-      } else {
-        System.out.println("boring recipients");
-        newRecipients.addAll(recipients);
+        if(p.getWorld().getUID().equals(player.getWorld().getUID())) continue;
       }
+      newRecipients.add(p);
     }
     return newRecipients;
   }
@@ -282,6 +284,26 @@ public class ChatManager implements Listener {
   public void addHandler(ChatHandler handler) {
     handlers.put(handler.getName(), handler);
     handlersMap.put(handler.getTypes().keySet(), handler.getName());
+  }
+
+  public void ignore(final UUID id, String channel) {
+    if(ignored.containsKey(channel)) {
+      ignored.get(channel).add(id.toString());
+    }
+    HashSet<String> ignoring = new HashSet<>();
+    ignoring.add(id.toString());
+    ignored.put(channel, ignoring);
+  }
+
+  public Map<String, HashSet<String>> getIgnored() {
+    return ignored;
+  }
+
+  public boolean ignoring(final UUID id, String channel) {
+    if(ignored.containsKey(channel)) {
+      return ignored.get(channel).contains(id.toString());
+    }
+    return false;
   }
 
   public LinkedHashMap<String, ChatHandler> getHandlers() {

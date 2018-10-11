@@ -12,6 +12,7 @@ Chats:
       - ec
     Handler: "Core"
     Type: "Basic"
+    Ignorable: true
     WorldBased: false
     Radial: false
     Radius: 20
