@@ -134,15 +134,6 @@ public class ChatManager implements Listener {
     event.setFormat(formatMessage(event.getPlayer(), recipients, channel, event.getMessage()));
     System.out.println(" new recipients" + recipients.toString());
     System.out.println("new format: " + event.getFormat());
-    event.setCancelled(true);
-
-    for(Player p : event.getRecipients()) {
-      if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-        p.sendMessage(PlaceholderAPI.setPlaceholders(p, event.getFormat()));
-      } else {
-        p.sendMessage(event.getFormat());
-      }
-    }
   }
 
   public String formatMessage(final Player player, Collection<Player> recipients, final String channel, final String message) {
@@ -151,6 +142,9 @@ public class ChatManager implements Listener {
 
     if(handler.equalsIgnoreCase("") || channel.equalsIgnoreCase("general")) {
       String format = parseCoreVariables(player, message, CoreConfigNodes.CORE_GENERAL_CHAT_FORMAT.getString());
+      if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        format = PlaceholderAPI.setPlaceholders(player, format);
+      }
       if(!generalHandler.equalsIgnoreCase("core") &&
           handlers.containsKey(generalHandler)) {
         format = handlers.get(handler).parseMessage(player, "general", message, format);
@@ -165,8 +159,10 @@ public class ChatManager implements Listener {
       return format;
     } else {
       ChatEntry entry = chats.get(handler).get(channel);
-      String format = entry.getFormat();
-      format = parseCoreVariables(player, message, format);
+      String format = parseCoreVariables(player, message, entry.getFormat());
+      if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        format = PlaceholderAPI.setPlaceholders(player, format);
+      }
       final Collection<Player> recip = getRecipientsRadial(handlers.get(handler).getType(channel).getRecipients(recipients, player), player,
                                                          entry.isWorld(),
                                                          entry.isRadial(),
@@ -181,11 +177,7 @@ public class ChatManager implements Listener {
   public void sendMessage(final Player player, Collection<Player> recipients, final String channel, final String message, boolean sendPlayer) {
     String format = formatMessage(player, recipients, channel, message);
     for(Player p : recipients) {
-      if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-        p.sendMessage(PlaceholderAPI.setPlaceholders(p, format));
-      } else {
-        p.sendMessage(format);
-      }
+      p.sendMessage(format);
     }
 
     if(sendPlayer) player.sendMessage(format);
