@@ -54,16 +54,23 @@ public class IgnoreCommand extends TNECommand {
     if(arguments.length > 0) {
       final UUID id = getPlayer(sender).getUniqueId();
       if(plugin.getManager().getCommands().values().contains(arguments[0]) || arguments[0].equalsIgnoreCase("general")) {
-        if(!plugin.getManager().ignoring(id, arguments[0])) {
-          plugin.getManager().ignore(id, arguments[0]);
-          sender.sendMessage(ChatColor.GOLD + "Now ignoring channel: " + arguments[0] + ".");
-          return true;
-        } else {
-          plugin.getManager().getIgnored().get(arguments[0]).remove(id.toString());
-          sender.sendMessage(ChatColor.GOLD + "No longer ignoring channel: " + arguments[0] + ".");
-          return true;
+        final String handler = plugin.getManager().getHandler(arguments[0]);
+        if(plugin.getManager().getChats().get(handler).get(arguments[0]).isIgnorable()) {
+          if(!plugin.getManager().ignoring(id, arguments[0])) {
+            plugin.getManager().ignore(id, arguments[0]);
+            sender.sendMessage(ChatColor.GOLD + "Now ignoring channel: " + arguments[0] + ".");
+            return true;
+          } else {
+            plugin.getManager().getIgnored().get(arguments[0]).remove(id.toString());
+            sender.sendMessage(ChatColor.GOLD + "No longer ignoring channel: " + arguments[0] + ".");
+            return true;
+          }
         }
+        sender.sendMessage(ChatColor.RED + "Cannot ignore that channel.");
+        return false;
       }
+      sender.sendMessage(ChatColor.RED + "Invalid channel.");
+      return false;
     }
     help(sender);
     return false;

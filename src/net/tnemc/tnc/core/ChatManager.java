@@ -134,14 +134,20 @@ public class ChatManager implements Listener {
     System.out.println("Recipients" + recipients.toString());
     System.out.println("onChat called");
     System.out.println("format: " + event.getFormat());
-    event.setFormat(formatMessage(event.getPlayer(), recipients, channel, event.getMessage()));
+    String handler = getHandler(channel);
+
+    final String permission = (channel.equalsIgnoreCase("general"))? "tnc.general" :
+                              chats.get(handler).get(channel).getPermission();
+    if(!permission.equalsIgnoreCase("") && !event.getPlayer().hasPermission(permission)) {
+      event.setCancelled(true);
+    }
+
+    event.setFormat(formatMessage(event.getPlayer(), recipients, handler, channel, event.getMessage()));
     System.out.println(" new recipients" + recipients.toString());
     System.out.println("new format: " + event.getFormat());
   }
 
-  public String formatMessage(final Player player, Collection<Player> recipients, final String channel, final String message) {
-
-    final String handler = getHandler(channel);
+  public String formatMessage(final Player player, Collection<Player> recipients, final String handler, final String channel, final String message) {
 
     if(handler.equalsIgnoreCase("") || channel.equalsIgnoreCase("general")) {
       String format = parseCoreVariables(player, message, CoreConfigNodes.CORE_GENERAL_CHAT_FORMAT.getString());
@@ -180,8 +186,8 @@ public class ChatManager implements Listener {
     }
   }
 
-  public void sendMessage(final Player player, Collection<Player> recipients, final String channel, final String message, boolean sendPlayer) {
-    String format = formatMessage(player, recipients, channel, message);
+  public void sendMessage(final Player player, Collection<Player> recipients, final String handler, final String channel, final String message, boolean sendPlayer) {
+    String format = formatMessage(player, recipients, handler, channel, message);
     for(Player p : recipients) {
       p.sendMessage(format);
     }

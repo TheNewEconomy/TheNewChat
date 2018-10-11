@@ -42,6 +42,12 @@ The core variables of The New Chat.
 | $level    | 1.0     | Returns the player's exp level.     |
 | $xp       | 1.0     | Returns the player's total exp.     |
 
+The core chat types in The New Chat.
+
+| Name      | Version | Description                                     | 
+|-----------|:-------:|-------------------------------------------------|
+| Basic     |  1.0    | Basic permissions-backed channel.               |
+
 ## The New Kings
 The variables for The New King's Chat Handler.
 
