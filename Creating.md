@@ -21,8 +21,7 @@ In this example we'll make a simple Town Chat Channel for a towny server.
 Using [our variables page](https://github.com/TheNewEconomy/TheNewChat/blob/master/Variables.md) will tell you the handler for Towny is "towny". From
 there we find the correct type we need, which is town.
 
-As seen here:
-![towny image](http://prntscr.com/l51iad "Towny Image")
+As seen [here](http://prntscr.com/l51iad).
 
 ```yaml
 Chats:
