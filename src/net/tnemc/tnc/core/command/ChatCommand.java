@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  * Created by creatorfromhell.
@@ -57,15 +58,16 @@ public class ChatCommand extends TNECommand {
 
   @Override
   public boolean execute(CommandSender sender, String command, String[] arguments) {
+    final UUID id = getPlayer(sender).getUniqueId();
     if(command.equalsIgnoreCase("tnc")) {
       if(arguments.length >= 1) {
         if(!plugin.getManager().getHandler(arguments[0]).equalsIgnoreCase("")) {
           if(arguments.length == 1) {
-            plugin.getManager().getChannels().put(getPlayer(sender).getUniqueId().toString(), arguments[0]);
+            plugin.getManager().getChannels().put(id.toString(), arguments[0]);
             sender.sendMessage(ChatColor.GOLD + "Joined channel: " + arguments[0]);
             return true;
           } else {
-            plugin.getManager().sendMessage(getPlayer(sender), getCollection(), arguments[0], String.join(" ", Arrays.copyOfRange(arguments, 1, arguments.length + 1)), true);
+            plugin.getManager().sendMessage(getPlayer(sender), getCollection(), arguments[0], String.join(" ", Arrays.copyOfRange(arguments, 1, arguments.length + 1)), false);
             return true;
           }
         }
@@ -76,13 +78,29 @@ public class ChatCommand extends TNECommand {
       return false;
     } else {
       String channel = plugin.getManager().getChannelByCommand(command);
+      if(command.equalsIgnoreCase("gc") || command.equalsIgnoreCase("generalchat")) {
+        channel = "general";
+      }
       if(channel != null) {
         if(arguments.length == 0) {
-          plugin.getManager().getChannels().put(getPlayer(sender).getUniqueId().toString(), channel);
-          sender.sendMessage(ChatColor.GOLD + "Joined channel: " + channel);
-          return true;
+          if(channel.equalsIgnoreCase("general")) {
+            plugin.getManager().getChannels().remove(id.toString());
+            sender.sendMessage(ChatColor.GOLD + "Joined General Chat");
+            return true;
+          } else {
+            if(plugin.getManager().getChannels().containsKey(id.toString()) &&
+                channel.equalsIgnoreCase(plugin.getManager().getChannels().get(id.toString()))) {
+              plugin.getManager().getChannels().remove(id.toString());
+              sender.sendMessage(ChatColor.GOLD + "Left channel: " + channel);
+              return true;
+            } else {
+              plugin.getManager().getChannels().put(id.toString(), channel);
+              sender.sendMessage(ChatColor.GOLD + "Joined channel: " + channel);
+              return true;
+            }
+          }
         } else {
-          plugin.getManager().sendMessage(getPlayer(sender), getCollection(), channel, String.join(" ", arguments), true);
+          plugin.getManager().sendMessage(getPlayer(sender), getCollection(), channel, String.join(" ", arguments), false);
           return true;
         }
       }

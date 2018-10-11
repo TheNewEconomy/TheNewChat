@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 public class PactVariable extends ChatVariable {
   @Override
   public String name() {
-    return "$pact";
+    return "\\$pact";
   }
 
   @Override

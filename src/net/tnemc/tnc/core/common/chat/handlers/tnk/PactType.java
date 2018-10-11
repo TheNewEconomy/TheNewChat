@@ -19,7 +19,7 @@ import java.util.HashSet;
  */
 public class PactType extends ChatType {
   public PactType() {
-    super("pact", "<gray>[<aqua>$nation<gray>]: <white>$message");
+    super("pact", "<gray>[<aqua>$kingdom<gray>]: <white>$message");
   }
 
   @Override

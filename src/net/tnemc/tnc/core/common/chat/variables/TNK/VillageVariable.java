@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 public class VillageVariable extends ChatVariable {
   @Override
   public String name() {
-    return "$village";
+    return "\\$village";
   }
 
   @Override

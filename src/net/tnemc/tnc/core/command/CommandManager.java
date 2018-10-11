@@ -1,6 +1,6 @@
 package net.tnemc.tnc.core.command;
 
-import net.tnemc.tnk.core.TheNewKings;
+import net.tnemc.tnc.core.TheNewChat;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
@@ -71,7 +71,7 @@ public class CommandManager {
     try {
       Constructor<PluginCommand> c = PluginCommand.class.getDeclaredConstructor(String.class, Plugin.class);
       c.setAccessible(true);
-      PluginCommand pluginCommand = c.newInstance(command, TheNewKings.instance());
+      PluginCommand pluginCommand = c.newInstance(command, TheNewChat.instance());
       if(pluginCommand != null) {
         ((SimpleCommandMap) commandMap.get(Bukkit.getServer())).register(command, pluginCommand);
       }

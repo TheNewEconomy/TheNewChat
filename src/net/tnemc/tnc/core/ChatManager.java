@@ -3,8 +3,15 @@ package net.tnemc.tnc.core;
 import net.tnemc.tnc.core.common.chat.ChatEntry;
 import net.tnemc.tnc.core.common.chat.ChatHandler;
 import net.tnemc.tnc.core.common.chat.ChatVariable;
+import net.tnemc.tnc.core.common.chat.handlers.CoreHandler;
 import net.tnemc.tnc.core.common.chat.handlers.TNKHandler;
 import net.tnemc.tnc.core.common.chat.handlers.TownyHandler;
+import net.tnemc.tnc.core.common.chat.variables.core.DisplayVariable;
+import net.tnemc.tnc.core.common.chat.variables.core.LevelVariable;
+import net.tnemc.tnc.core.common.chat.variables.core.MessageVariable;
+import net.tnemc.tnc.core.common.chat.variables.core.UsernameVariable;
+import net.tnemc.tnc.core.common.chat.variables.core.WorldVariable;
+import net.tnemc.tnc.core.common.chat.variables.core.XPVariable;
 import net.tnemc.tnc.core.common.configuration.CoreConfigNodes;
 import net.tnemc.tnc.core.utils.Message;
 import org.bukkit.Bukkit;
@@ -57,11 +64,14 @@ public class ChatManager implements Listener {
   public ChatManager(String generalHandler) {
     this.generalHandler = generalHandler;
 
+    loadCoreVariables();
     loadHandlers();
     loadChats();
   }
 
   public void loadHandlers() {
+    addHandler(new CoreHandler());
+
     if(Bukkit.getPluginManager().isPluginEnabled("TheNewKings")) {
       addHandler(new TNKHandler());
     }
@@ -69,6 +79,15 @@ public class ChatManager implements Listener {
     if(Bukkit.getPluginManager().isPluginEnabled("Towny")) {
       addHandler(new TownyHandler());
     }
+  }
+
+  public void loadCoreVariables() {
+    coreVariables.put("$display", new DisplayVariable());
+    coreVariables.put("$level", new LevelVariable());
+    coreVariables.put("$message", new MessageVariable());
+    coreVariables.put("$username", new UsernameVariable());
+    coreVariables.put("$world", new WorldVariable());
+    coreVariables.put("$xp", new XPVariable());
   }
 
   public void loadChats() {
@@ -108,7 +127,12 @@ public class ChatManager implements Listener {
     }
 
     Set<Player> recipients = event.getRecipients();
+    System.out.println("Recipients" + recipients.toString());
+    System.out.println("onChat called");
+    System.out.println("format: " + event.getFormat());
     event.setFormat(formatMessage(event.getPlayer(), recipients, channel, event.getMessage()));
+    System.out.println(" new recipients" + recipients.toString());
+    System.out.println("new format: " + event.getFormat());
   }
 
   public String formatMessage(final Player player, Collection<Player> recipients, final String channel, final String message) {
@@ -116,11 +140,9 @@ public class ChatManager implements Listener {
     final String handler = getHandler(channel);
 
     if(handler.equalsIgnoreCase("") || channel.equalsIgnoreCase("general")) {
-      String format = CoreConfigNodes.CORE_GENERAL_CHAT_FORMAT.getString();
-      if(generalHandler.equalsIgnoreCase("core") ||
-          !handlers.containsKey(generalHandler)) {
-        format = parseCoreVariables(player, message, format);
-      } else {
+      String format = parseCoreVariables(player, message, CoreConfigNodes.CORE_GENERAL_CHAT_FORMAT.getString());
+      if(!generalHandler.equalsIgnoreCase("core") &&
+          handlers.containsKey(generalHandler)) {
         format = handlers.get(handler).parseMessage(player, "general", message, format);
       }
       final Collection<Player> recip = getRecipientsRadial(recipients, player,
@@ -134,6 +156,7 @@ public class ChatManager implements Listener {
     } else {
       ChatEntry entry = chats.get(handler).get(channel);
       String format = entry.getFormat();
+      format = parseCoreVariables(player, message, format);
       final Collection<Player> recip = getRecipientsRadial(handlers.get(handler).getType(channel).getRecipients(recipients, player), player,
                                                          entry.isWorld(),
                                                          entry.isRadial(),
@@ -172,13 +195,15 @@ public class ChatManager implements Listener {
       }
     } else {
       if(world) {
+        System.out.println("world-based recipients");
         for(Player p : recipients) {
           if(p.getWorld().getUID().equals(player.getWorld().getUID())) {
             newRecipients.add(p);
           }
         }
       } else {
-        newRecipients = recipients;
+        System.out.println("boring recipients");
+        newRecipients.addAll(recipients);
       }
     }
     return newRecipients;
@@ -186,7 +211,7 @@ public class ChatManager implements Listener {
 
   public String getHandler(String type) {
     for(Map.Entry<Set<String>, String> entry : handlersMap.entrySet()) {
-      if(entry.getKey().contains(type)) return entry.getValue();
+      if(entry.getKey().contains(type)) return entry.getValue().toLowerCase();
     }
     return "";
   }

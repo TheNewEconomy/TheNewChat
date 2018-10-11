@@ -1,7 +1,9 @@
-package net.tnemc.tnc.core.common.chat.variables.core;
+package net.tnemc.tnc.core.common.chat.handlers.core;
 
-import net.tnemc.tnc.core.common.chat.ChatVariable;
+import net.tnemc.tnc.core.common.chat.ChatType;
 import org.bukkit.entity.Player;
+
+import java.util.Collection;
 
 /**
  * Created by creatorfromhell.
@@ -12,14 +14,13 @@ import org.bukkit.entity.Player;
  * International License. To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/
  * or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
  */
-public class UsernameVariable extends ChatVariable {
-  @Override
-  public String name() {
-    return "\\$username";
+public class BasicType extends ChatType {
+  public BasicType() {
+    super("basic", "<white>[<blue>$display<white>]: <yellow>$message");
   }
 
   @Override
-  public String parse(Player player, String message) {
-    return player.getName();
+  public Collection<Player> getRecipients(Collection<Player> recipients, Player player) {
+    return recipients;
   }
 }

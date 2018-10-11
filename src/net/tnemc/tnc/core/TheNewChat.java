@@ -65,6 +65,9 @@ public class TheNewChat extends JavaPlugin {
 
     List<String> commands = new ArrayList<>();
     commands.addAll(manager.getCommands().keySet());
+    commands.add("gc");
+    commands.add("generalchat");
+    commands.add("generalchat");
     commands.add("tnc");
     final String[] commandsArray = commands.toArray(new String[commands.size()]);
 

@@ -19,7 +19,7 @@ import java.util.HashSet;
  */
 public class KingdomType extends ChatType {
   public KingdomType() {
-    super("kingdom", "<gray>[<aqua>$town<gray>]$display: <white>$message");
+    super("kingdom", "<gray>[<aqua>$village<gray>]$display: <white>$message");
   }
 
   @Override
