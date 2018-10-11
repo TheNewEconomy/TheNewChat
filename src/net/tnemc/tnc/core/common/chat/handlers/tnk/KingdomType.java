@@ -23,6 +23,14 @@ public class KingdomType extends ChatType {
   }
 
   @Override
+  public boolean canChat(Player player) {
+    TheNewKings.instance().saveManager().open();
+    boolean hasKingdom = KingdomHelper.hasKingdomPlayer(player.getUniqueId(), player.getWorld().getName());
+    TheNewKings.instance().saveManager().close();
+    return hasKingdom;
+  }
+
+  @Override
   public Collection<Player> getRecipients(Collection<Player> recipients, Player player) {
     TheNewKings.instance().saveManager().open();
     final String kingdom = KingdomHelper.getKingdomPlayer(player.getUniqueId(), player.getWorld().getName());

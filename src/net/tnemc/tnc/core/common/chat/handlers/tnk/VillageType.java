@@ -23,6 +23,14 @@ public class VillageType extends ChatType {
   }
 
   @Override
+  public boolean canChat(Player player) {
+    TheNewKings.instance().saveManager().open();
+    boolean hasVillage = VillageHelper.hasVillage(player.getUniqueId(), player.getWorld().getName());
+    TheNewKings.instance().saveManager().close();
+    return hasVillage;
+  }
+
+  @Override
   public Collection<Player> getRecipients(Collection<Player> recipients, Player player) {
     TheNewKings.instance().saveManager().open();
     final String village = VillageHelper.getVillage(player.getUniqueId(), player.getWorld().getName());

@@ -23,6 +23,14 @@ public class PactType extends ChatType {
   }
 
   @Override
+  public boolean canChat(Player player) {
+    TheNewKings.instance().saveManager().open();
+    boolean hasPact = PactHelper.hasPactPlayer(player.getUniqueId(), player.getWorld().getName());
+    TheNewKings.instance().saveManager().close();
+    return hasPact;
+  }
+
+  @Override
   public Collection<Player> getRecipients(Collection<Player> recipients, Player player) {
     TheNewKings.instance().saveManager().open();
     final String pact = PactHelper.getPactPlayer(player.getUniqueId(), player.getWorld().getName());

@@ -59,6 +59,25 @@ public enum CoreConfigNodes implements IConfigNode {
     }
   },
 
+  CORE_GENERAL_CHAT_IGNORABLE{
+    @Override
+    public String getNode() {
+      return "core.generalchat.ignorable";
+    }
+
+    @Override
+    public String getDefaultValue() {
+      return "true";
+    }
+
+    @Override
+    public String[] getComments() {
+      return new String[] {
+          "Whether or not general chat should be ignorable using the /ignorechannel command."
+      };
+    }
+  },
+
   CORE_GENERAL_CHAT_WORLD_BASED {
     @Override
     public String getNode() {

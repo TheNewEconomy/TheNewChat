@@ -24,6 +24,16 @@ public class NationType extends ChatType {
   }
 
   @Override
+  public boolean canChat(Player player) {
+    try {
+      return TownyUniverse.getDataSource().getResident(player.getName()).hasTown() && TownyUniverse.getDataSource().getResident(player.getName()).getTown().hasNation();
+    } catch(NotRegisteredException ignore) {
+
+    }
+    return false;
+  }
+
+  @Override
   public Collection<Player> getRecipients(Collection<Player> recipients, Player player) {
     try {
       final UUID nation = TownyUniverse.getDataSource().getResident(player.getName()).getTown().getNation().getUuid();

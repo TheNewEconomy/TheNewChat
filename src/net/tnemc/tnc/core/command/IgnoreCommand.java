@@ -1,6 +1,7 @@
 package net.tnemc.tnc.core.command;
 
 import net.tnemc.tnc.core.TheNewChat;
+import net.tnemc.tnc.core.common.configuration.CoreConfigNodes;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -55,7 +56,9 @@ public class IgnoreCommand extends TNECommand {
       final UUID id = getPlayer(sender).getUniqueId();
       if(plugin.getManager().getCommands().values().contains(arguments[0]) || arguments[0].equalsIgnoreCase("general")) {
         final String handler = plugin.getManager().getHandler(arguments[0]);
-        if(plugin.getManager().getChats().get(handler).get(arguments[0]).isIgnorable()) {
+        boolean ignorable = (arguments[0].equalsIgnoreCase("general"))? CoreConfigNodes.CORE_GENERAL_CHAT_IGNORABLE.getBoolean() :
+            plugin.getManager().getChats().get(handler).get(arguments[0]).isIgnorable();
+        if(ignorable) {
           if(!plugin.getManager().ignoring(id, arguments[0])) {
             plugin.getManager().ignore(id, arguments[0]);
             sender.sendMessage(ChatColor.GOLD + "Now ignoring channel: " + arguments[0] + ".");

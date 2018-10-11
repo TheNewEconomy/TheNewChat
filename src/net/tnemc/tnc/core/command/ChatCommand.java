@@ -62,6 +62,14 @@ public class ChatCommand extends TNECommand {
     if(command.equalsIgnoreCase("tnc")) {
       if(arguments.length >= 1) {
         if(!plugin.getManager().getHandler(arguments[0]).equalsIgnoreCase("")) {
+
+          final String handler = plugin.getManager().getHandler(arguments[0]);
+          if(arguments[0].equalsIgnoreCase("general") && !getPlayer(sender).hasPermission("tnc.general") ||
+              !plugin.getManager().getHandlers().get(handler).getType(arguments[0].toLowerCase()).canChat(getPlayer(sender))) {
+            sender.sendMessage(ChatColor.RED + "Unable to use the specified channel.");
+            return false;
+          }
+
           if(arguments.length == 1) {
             plugin.getManager().getChannels().put(id.toString(), arguments[0]);
             sender.sendMessage(ChatColor.GOLD + "Joined channel: " + arguments[0]);
@@ -82,6 +90,14 @@ public class ChatCommand extends TNECommand {
         channel = "general";
       }
       if(channel != null) {
+
+        final String handler = plugin.getManager().getHandler(channel);
+        if(channel.equalsIgnoreCase("general") && !getPlayer(sender).hasPermission("tnc.general") ||
+            !plugin.getManager().getHandlers().get(handler).getType(channel.toLowerCase()).canChat(getPlayer(sender))) {
+          sender.sendMessage(ChatColor.RED + "Unable to use the specified channel.");
+          return false;
+        }
+
         if(arguments.length == 0) {
           if(channel.equalsIgnoreCase("general")) {
             plugin.getManager().getChannels().remove(id.toString());

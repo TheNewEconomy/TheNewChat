@@ -24,6 +24,16 @@ public class AllyType extends ChatType {
   }
 
   @Override
+  public boolean canChat(Player player) {
+    try {
+      return TownyUniverse.getDataSource().getResident(player.getName()).hasTown() && TownyUniverse.getDataSource().getResident(player.getName()).getTown().hasNation();
+    } catch(NotRegisteredException ignore) {
+
+    }
+    return false;
+  }
+
+  @Override
   public Collection<Player> getRecipients(Collection<Player> recipients, Player player) {
     try {
       final Nation nation = TownyUniverse.getDataSource().getResident(player.getName()).getTown().getNation();
@@ -37,8 +47,7 @@ public class AllyType extends ChatType {
         }
       }
       return newRecipients;
-    } catch(NotRegisteredException e) {
-      e.printStackTrace();
+    } catch(NotRegisteredException ignore) {
     }
     return recipients;
   }

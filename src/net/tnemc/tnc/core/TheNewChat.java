@@ -64,15 +64,7 @@ public class TheNewChat extends JavaPlugin {
     this.manager = new ChatManager(CoreConfigNodes.CORE_GENERAL_CHAT_HANDLER.getString());
     commandManager = new CommandManager();
 
-    List<String> commands = new ArrayList<>();
-    commands.addAll(manager.getCommands().keySet());
-    commands.add("gc");
-    commands.add("generalchat");
-    commands.add("generalchat");
-    commands.add("tnc");
-    final String[] commandsArray = commands.toArray(new String[commands.size()]);
-
-    registerCommand(commandsArray, new ChatCommand(this, commandsArray));
+    registerChatCommand();
     registerCommand(new String[] { "ignorec", "igc", "ignorechannel" }, new IgnoreCommand(this));
     registerListener(manager);
   }
@@ -85,21 +77,21 @@ public class TheNewChat extends JavaPlugin {
     return commandManager;
   }
 
-  public void registerCommand(String[] accessors, TNECommand command) {
+  private void registerCommand(String[] accessors, TNECommand command) {
     commandManager.commands.put(accessors, command);
     commandManager.registerCommands();
   }
 
-  public void registerCommands(Map<String[], TNECommand> commands) {
+  private void registerCommands(Map<String[], TNECommand> commands) {
     commandManager.commands = commands;
     commandManager.registerCommands();
   }
 
-  public void registerListener(Listener listener) {
+  private void registerListener(Listener listener) {
     getServer().getPluginManager().registerEvents(listener, this);
   }
 
-  public void unregisterCommand(String[] accessors) {
+  private void unregisterCommand(String[] accessors) {
     commandManager.unregister(accessors);
   }
 
@@ -116,6 +108,18 @@ public class TheNewChat extends JavaPlugin {
     return false;
   }
 
+  public void registerChatCommand() {
+    List<String> commands = new ArrayList<>();
+    commands.addAll(manager.getCommands().keySet());
+    commands.add("gc");
+    commands.add("generalchat");
+    commands.add("generalchat");
+    commands.add("tnc");
+    final String[] commandsArray = commands.toArray(new String[commands.size()]);
+
+    registerCommand(commandsArray, new ChatCommand(this, commandsArray));
+  }
+
   private void initializeConfigurations() {
     chatsFile = new File(getDataFolder(), "chats.yml");
     chatsConfiguration = YamlConfiguration.loadConfiguration(chatsFile);
@@ -126,7 +130,7 @@ public class TheNewChat extends JavaPlugin {
     }
   }
 
-  public void loadConfigurations() {
+  private void loadConfigurations() {
     chatsConfiguration.options().copyDefaults(true);
     saveConfigurations();
   }
@@ -153,7 +157,7 @@ public class TheNewChat extends JavaPlugin {
     return instance;
   }
 
-  public FileConfiguration getChatsConfiguration() {
+  FileConfiguration getChatsConfiguration() {
     return chatsConfiguration;
   }
 }

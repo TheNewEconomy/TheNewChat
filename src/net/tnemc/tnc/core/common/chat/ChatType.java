@@ -25,6 +25,10 @@ public abstract class ChatType {
   }
   public abstract Collection<Player> getRecipients(Collection<Player> recipients, Player player);
 
+  public boolean canChat(final Player player) {
+    return true;
+  }
+
   public String handle(Player player, String message, String format) {
     return format;
   }
