@@ -1,5 +1,6 @@
 package net.tnemc.tnc.core;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.tnemc.tnc.core.common.chat.ChatEntry;
 import net.tnemc.tnc.core.common.chat.ChatHandler;
 import net.tnemc.tnc.core.common.chat.ChatVariable;
@@ -133,6 +134,15 @@ public class ChatManager implements Listener {
     event.setFormat(formatMessage(event.getPlayer(), recipients, channel, event.getMessage()));
     System.out.println(" new recipients" + recipients.toString());
     System.out.println("new format: " + event.getFormat());
+    event.setCancelled(true);
+
+    for(Player p : event.getRecipients()) {
+      if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        p.sendMessage(PlaceholderAPI.setPlaceholders(p, event.getFormat()));
+      } else {
+        p.sendMessage(event.getFormat());
+      }
+    }
   }
 
   public String formatMessage(final Player player, Collection<Player> recipients, final String channel, final String message) {
@@ -169,10 +179,13 @@ public class ChatManager implements Listener {
   }
 
   public void sendMessage(final Player player, Collection<Player> recipients, final String channel, final String message, boolean sendPlayer) {
-    Collection<Player> chatRecipients = recipients;
     String format = formatMessage(player, recipients, channel, message);
-    for(Player p : chatRecipients) {
-      p.sendMessage(format);
+    for(Player p : recipients) {
+      if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        p.sendMessage(PlaceholderAPI.setPlaceholders(p, format));
+      } else {
+        p.sendMessage(format);
+      }
     }
 
     if(sendPlayer) player.sendMessage(format);
