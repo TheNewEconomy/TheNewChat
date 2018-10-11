@@ -6,6 +6,7 @@ import net.tnemc.tnc.core.common.chat.ChatVariable;
 import net.tnemc.tnc.core.common.chat.handlers.TNKHandler;
 import net.tnemc.tnc.core.common.chat.handlers.TownyHandler;
 import net.tnemc.tnc.core.common.configuration.CoreConfigNodes;
+import net.tnemc.tnc.core.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -71,26 +72,26 @@ public class ChatManager implements Listener {
   }
 
   public void loadChats() {
-    final String baseNode = "Core.Chats";
-    if(ConfigurationManager.hasConfiguration("config.yml", baseNode)) {
-      Set<String> chatConfigs = ConfigurationManager.getConfigurationSection("config.yml", baseNode).getKeys(false);
+    final String baseNode = "Chats";
+    if(TheNewChat.instance().getChatsConfiguration().contains(baseNode)) {
+      Set<String> chatConfigs = TheNewChat.instance().getChatsConfiguration().getConfigurationSection(baseNode).getKeys(false);
       for(String entry : chatConfigs) {
-        if(!ConfigurationManager.hasConfiguration("config.yml", baseNode + "." + entry + ".Handler") ||
-            !ConfigurationManager.hasConfiguration("config.yml", baseNode + "." + entry + ".Type")) {
+        if(!TheNewChat.instance().getChatsConfiguration().contains(baseNode + "." + entry + ".Handler") ||
+            !TheNewChat.instance().getChatsConfiguration().contains(baseNode + "." + entry + ".Type")) {
           continue;
         }
-        final String handler = ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Handler");
-        final String type = ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Type");
+        final String handler = TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Handler");
+        final String type = TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Type");
 
         ChatEntry chatConfig = new ChatEntry(handler, type);
 
-        List<String> commands = ConfigurationManager.getStrList("config.yml", baseNode + "." + entry + ".Commands");
+        List<String> commands = TheNewChat.instance().getChatsConfiguration().getStringList(baseNode + "." + entry + ".Commands");
         chatConfig.setCommands(commands.toArray(new String[commands.size()]));
-        chatConfig.setWorld(ConfigurationManager.getBoolean("config.yml", baseNode + "." + entry + ".WorldBased", false));
-        chatConfig.setRadial(ConfigurationManager.getBoolean("config.yml", baseNode + "." + entry + ".Radial", false));
-        chatConfig.setRadius(ConfigurationManager.getInt("config.yml", baseNode + "." + entry + ".Radius", 20));
-        chatConfig.setPermission(ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Permission", ""));
-        chatConfig.setFormat(ConfigurationManager.getString("config.yml", baseNode + "." + entry + ".Permission", handlers.get(handler).getType(type).getDefaultFormat()));
+        chatConfig.setWorld(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".WorldBased", false));
+        chatConfig.setRadial(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".Radial", false));
+        chatConfig.setRadius(TheNewChat.instance().getChatsConfiguration().getInt(baseNode + "." + entry + ".Radius", 20));
+        chatConfig.setPermission(TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Permission", ""));
+        chatConfig.setFormat(TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Format", handlers.get(handler).getType(type).getDefaultFormat()));
 
         addChatEntry(chatConfig);
       }
@@ -158,7 +159,7 @@ public class ChatManager implements Listener {
     for(ChatVariable variable : coreVariables.values()) {
       format = format.replaceAll(variable.name(), variable.parse(player, message));
     }
-    return format;
+    return Message.replaceColours(format, false);
   }
 
   private Collection<Player> getRecipientsRadial(final Collection<Player> recipients, final Player player, final boolean world, final boolean radial, final int radius) {

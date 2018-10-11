@@ -15,14 +15,14 @@ public enum CoreConfigNodes implements IConfigNode {
   GENERAL_HEADER {
     @Override
     public String getNode() {
-      return "General";
+      return "general";
     }
   },
 
   GENERAL_METRICS {
     @Override
     public String getNode() {
-      return "General.Metrics";
+      return "general.Metrics";
     }
 
     @Override
@@ -41,14 +41,14 @@ public enum CoreConfigNodes implements IConfigNode {
   CORE_HEADER {
     @Override
     public String getNode() {
-      return "Core";
+      return "core";
     }
   },
 
   CORE_GENERAL_CHAT {
     @Override
     public String getNode() {
-      return "Core.GeneralChat";
+      return "core.generalchat";
     }
 
     @Override
@@ -62,7 +62,7 @@ public enum CoreConfigNodes implements IConfigNode {
   CORE_GENERAL_CHAT_WORLD_BASED {
     @Override
     public String getNode() {
-      return "Core.GeneralChat.WorldBased";
+      return "core.generalchat.worldbased";
     }
 
     @Override
@@ -81,7 +81,7 @@ public enum CoreConfigNodes implements IConfigNode {
   CORE_GENERAL_CHAT_RADIAL {
     @Override
     public String getNode() {
-      return "Core.GeneralChat.Radial";
+      return "core.generalchat.radial";
     }
 
     @Override
@@ -100,7 +100,7 @@ public enum CoreConfigNodes implements IConfigNode {
   CORE_GENERAL_CHAT_RADIUS {
     @Override
     public String getNode() {
-      return "Core.GeneralChat.Radius";
+      return "core.generalchat.radius";
     }
 
     @Override
@@ -119,7 +119,7 @@ public enum CoreConfigNodes implements IConfigNode {
   CORE_GENERAL_CHAT_HANDLER {
     @Override
     public String getNode() {
-      return "Core.GeneralChat.Handler";
+      return "core.generalchat.handler";
     }
 
     @Override
@@ -138,7 +138,7 @@ public enum CoreConfigNodes implements IConfigNode {
   CORE_GENERAL_CHAT_FORMAT {
     @Override
     public String getNode() {
-      return "Core.GeneralChat.Format";
+      return "core.generalchat.format";
     }
 
     @Override
@@ -152,20 +152,6 @@ public enum CoreConfigNodes implements IConfigNode {
           "The format to use for general chat.",
           "Variables and colour codes found at:",
           "https://github.com/TheNewEconomy/TheNewChat/blob/master/Variables.md"
-      };
-    }
-  },
-
-  CORE_CHATS {
-    @Override
-    public String getNode() {
-      return "Core.Chats";
-    }
-
-    @Override
-    public String[] getComments() {
-      return new String[] {
-          "Holds all chats."
       };
     }
   };

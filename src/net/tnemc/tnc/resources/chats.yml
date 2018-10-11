@@ -1,0 +1,18 @@
+# The New Chat v1.0.0.0
+# Author: creatorfromhell
+# License: http://creativecommons.org/licenses/by-nc-nd/4.0/
+# If you would like to contribute to the plugin
+# you can do so via Github at https://github.com/TheNewEconomy/TheNewChat
+# To donate to the continued development of TNC with perks, https://patreon.com/creatorfromhell
+# To view a commented version of this file, visit https://github.com/TheNewEconomy/TheNewChat/blob/master/src/net/tnemc/tnc/resources/chat.yml.
+Chats:
+  Example:
+    Commands:
+      - examplechat
+      - ec
+    Handler: "Core"
+    Type: "Basic"
+    Radial: false
+    Radius: 20
+    Permission: "examplechat.chat"
+    Format: "<white>[<blue>$display<white>]: <yellow>$message"

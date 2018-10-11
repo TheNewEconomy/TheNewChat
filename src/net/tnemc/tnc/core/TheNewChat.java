@@ -9,10 +9,16 @@ import net.tnemc.tnc.core.utils.FileMgmt;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +41,9 @@ public class TheNewChat extends JavaPlugin {
   private ChatManager manager;
   private CommandManager commandManager;
 
+  private File chatsFile;
+  private FileConfiguration chatsConfiguration;
+
   public void onLoad() {
     instance = this;
 
@@ -43,6 +52,13 @@ public class TheNewChat extends JavaPlugin {
 
   public void onEnable() {
     addConfiguration(new ConfigurationEntry(CoreConfigNodes.class, new File(getRootFolder() + FileMgmt.fileSeparator() + "config.yml")));
+
+    if (!ConfigurationManager.loadSettings()){
+      getLogger().info("Unable to load configuration!");
+    }
+
+    initializeConfigurations();
+    loadConfigurations();
 
     this.manager = new ChatManager(CoreConfigNodes.CORE_GENERAL_CHAT_HANDLER.getString());
     commandManager = new CommandManager();
@@ -53,7 +69,6 @@ public class TheNewChat extends JavaPlugin {
     final String[] commandsArray = commands.toArray(new String[commands.size()]);
 
     registerCommand(commandsArray, new ChatCommand(this, commandsArray));
-
     registerListener(manager);
   }
 
@@ -94,5 +109,46 @@ public class TheNewChat extends JavaPlugin {
       return ecoCommand.execute(sender, label, arguments);
     }
     return false;
+  }
+
+  private void initializeConfigurations() {
+    chatsFile = new File(getDataFolder(), "chats.yml");
+    chatsConfiguration = YamlConfiguration.loadConfiguration(chatsFile);
+    try {
+      setConfigurationDefaults();
+    } catch (UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+  }
+
+  public void loadConfigurations() {
+    chatsConfiguration.options().copyDefaults(true);
+    saveConfigurations();
+  }
+
+  private void saveConfigurations() {
+    try {
+      if(!chatsFile.exists()) {
+        chatsConfiguration.save(chatsFile);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void setConfigurationDefaults() throws UnsupportedEncodingException {
+    Reader chatsStream = new InputStreamReader(this.getResource("chats.yml"), "UTF8");
+    if (chatsStream != null && !chatsFile.exists()) {
+      YamlConfiguration config = YamlConfiguration.loadConfiguration(chatsStream);
+      chatsConfiguration.setDefaults(config);
+    }
+  }
+
+  public static TheNewChat instance() {
+    return instance;
+  }
+
+  public FileConfiguration getChatsConfiguration() {
+    return chatsConfiguration;
   }
 }
