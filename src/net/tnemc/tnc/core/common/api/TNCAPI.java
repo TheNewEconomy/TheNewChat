@@ -4,6 +4,7 @@ import net.tnemc.tnc.core.TheNewChat;
 import net.tnemc.tnc.core.common.chat.ChatEntry;
 import net.tnemc.tnc.core.common.chat.ChatHandler;
 import net.tnemc.tnc.core.common.chat.ChatType;
+import net.tnemc.tnc.core.common.chat.ChatVariable;
 
 /**
  * Created by creatorfromhell.
@@ -33,6 +34,14 @@ public class TNCAPI {
   public static boolean addType(final String handler, final ChatType type) {
     if(TheNewChat.instance().getManager().getHandlers().containsKey(handler)) {
       TheNewChat.instance().getManager().getHandlers().get(handler).addType(type);
+      return true;
+    }
+    return false;
+  }
+
+  public static boolean addVariable(final String handler, final ChatVariable variable) {
+    if(TheNewChat.instance().getManager().getHandlers().containsKey(handler)) {
+      TheNewChat.instance().getManager().getHandlers().get(handler).addVariable(variable);
       return true;
     }
     return false;
