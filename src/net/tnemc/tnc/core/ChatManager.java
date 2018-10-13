@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by creatorfromhell.
@@ -41,6 +43,8 @@ import java.util.UUID;
  * or send a letter to Creative Commons, PO Box 1866, Mountain View, CA 94042, USA.
  */
 public class ChatManager implements Listener {
+  public final Pattern variablePattern;
+  public final Pattern separatorPattern;
 
   private LinkedHashMap<String, ChatHandler> handlers = new LinkedHashMap<>();
 
@@ -65,11 +69,19 @@ public class ChatManager implements Listener {
 
 
   public ChatManager(String generalHandler) {
+    variablePattern = Pattern.compile("\\$\\s*(\\w+)");
+    separatorPattern = Pattern.compile("\\{(.*?)\\}");
     this.generalHandler = generalHandler;
 
     loadCoreVariables();
     loadHandlers();
     loadChats();
+  }
+
+  public void reload() {
+    TheNewChat.instance().loadConfigurations();
+    loadChats();
+    TheNewChat.instance().registerChatCommand();
   }
 
   public void loadHandlers() {
@@ -124,7 +136,7 @@ public class ChatManager implements Listener {
   @EventHandler(priority = EventPriority.HIGHEST)
   public void onChat(AsyncPlayerChatEvent event) {
     if(event.getMessage().startsWith("/")) return;
-    String channel = "General";
+    String channel = "general";
 
     if(channels.containsKey(event.getPlayer().getUniqueId().toString())) {
       channel = channels.get(event.getPlayer().getUniqueId().toString());
@@ -152,7 +164,7 @@ public class ChatManager implements Listener {
       }
       if(!generalHandler.equalsIgnoreCase("core") &&
           handlers.containsKey(generalHandler)) {
-        format = handlers.get(handler).parseMessage(player, "general", message, format);
+        format = handlers.get(generalHandler).parseMessage(player, "general", message, format);
       }
       final Collection<Player> recip = getRecipients(recipients, player,
                                                      CoreConfigNodes.CORE_GENERAL_CHAT_WORLD_BASED.getBoolean(),
@@ -162,7 +174,7 @@ public class ChatManager implements Listener {
 
       recipients.clear();
       recipients.addAll(recip);
-      return format;
+      return parseSeparators(format);
     } else {
       ChatEntry entry = chats.get(handler).get(channel);
       String format = parseCoreVariables(player, message, entry.getFormat());
@@ -178,7 +190,8 @@ public class ChatManager implements Listener {
 
       recipients.clear();
       recipients.addAll(recip);
-      return handlers.get(handler).parseMessage(player, channel, message, format);
+      format = handlers.get(handler).parseMessage(player, channel, message, format);
+      return parseSeparators(format);
     }
   }
 
@@ -191,9 +204,25 @@ public class ChatManager implements Listener {
     if(sendPlayer) player.sendMessage(format);
   }
 
+  private String parseSeparators(String format) {
+    Matcher matcher = TheNewChat.instance().getManager().separatorPattern.matcher(format);
+    while(matcher.find()) {
+      final String total = matcher.group();
+      if(matcher.group().contains(":")) {
+        String[] split = total.replace("{", "").replace("}", "").split(":");
+        if(!split[0].trim().equalsIgnoreCase("")) {
+          format = format.replaceAll(Pattern.quote(total), split[0] + split[1]);
+        } else {
+          format = format.replaceAll(Pattern.quote(total), "");
+        }
+      }
+    }
+    return format;
+  }
+
   private String parseCoreVariables(final Player player, String message, String format) {
     for(ChatVariable variable : coreVariables.values()) {
-      format = format.replaceAll(variable.name(), variable.parse(player, message));
+      format = format.replaceAll(Pattern.quote(variable.name()), variable.parse(player, message));
     }
     return Message.replaceColours(format, false);
   }

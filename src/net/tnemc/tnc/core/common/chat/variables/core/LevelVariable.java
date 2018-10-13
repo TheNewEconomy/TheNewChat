@@ -15,7 +15,7 @@ import org.bukkit.entity.Player;
 public class LevelVariable extends ChatVariable {
   @Override
   public String name() {
-    return "\\$level";
+    return "$level";
   }
 
   @Override

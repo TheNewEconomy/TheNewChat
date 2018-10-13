@@ -3,6 +3,7 @@ package net.tnemc.tnc.core;
 import net.tnemc.tnc.core.command.ChatCommand;
 import net.tnemc.tnc.core.command.CommandManager;
 import net.tnemc.tnc.core.command.IgnoreCommand;
+import net.tnemc.tnc.core.command.ReloadCommand;
 import net.tnemc.tnc.core.command.TNECommand;
 import net.tnemc.tnc.core.common.configuration.ConfigurationEntry;
 import net.tnemc.tnc.core.common.configuration.CoreConfigNodes;
@@ -65,6 +66,7 @@ public class TheNewChat extends JavaPlugin {
     commandManager = new CommandManager();
 
     registerChatCommand();
+    registerCommand(new String[] { "chatreload", "tncreload" }, new ReloadCommand(this));
     registerCommand(new String[] { "ignorec", "igc", "ignorechannel" }, new IgnoreCommand(this));
     registerListener(manager);
   }
@@ -130,7 +132,7 @@ public class TheNewChat extends JavaPlugin {
     }
   }
 
-  private void loadConfigurations() {
+  void loadConfigurations() {
     chatsConfiguration.options().copyDefaults(true);
     saveConfigurations();
   }

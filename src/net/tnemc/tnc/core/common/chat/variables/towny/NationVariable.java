@@ -17,16 +17,15 @@ import org.bukkit.entity.Player;
 public class NationVariable extends ChatVariable {
   @Override
   public String name() {
-    return "\\$nation";
+    return "$nation";
   }
 
   @Override
   public String parse(Player player, String message) {
     try {
       return TownyUniverse.getDataSource().getResident(player.getName()).getTown().getNation().getName();
-    } catch(NotRegisteredException e) {
-      e.printStackTrace();
+    } catch(NotRegisteredException ignore) {
+      return " ";
     }
-    return "<red>ERROR";
   }
 }

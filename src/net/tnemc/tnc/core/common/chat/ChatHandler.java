@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by creatorfromhell.
@@ -23,8 +24,9 @@ public abstract class ChatHandler {
 
   public String parseMessage(final Player player, final String type, String message, String format) {
     for(Map.Entry<String, ChatVariable> entry : variables.entrySet()) {
-      format = format.replaceAll(entry.getKey(), entry.getValue().parse(player, message));
+      format = format.replaceAll(Pattern.quote(entry.getKey()), entry.getValue().parse(player, message));
     }
+
     if(type.equalsIgnoreCase("general")) return format;
     return types.get(type).handle(player, message, format);
   }
