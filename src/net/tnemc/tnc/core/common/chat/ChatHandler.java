@@ -19,6 +19,7 @@ public abstract class ChatHandler {
 
   protected Map<String, ChatType> types = new HashMap<>();
   protected Map<String, ChatVariable> variables = new HashMap<>();
+  protected Map<String, ChatCheck> checks = new HashMap<>();
 
   public abstract String getName();
 
@@ -31,11 +32,23 @@ public abstract class ChatHandler {
     return types.get(type).handle(player, message, format);
   }
 
-  public void addVariable(ChatVariable variable) {
+  public void addCheck(final ChatCheck check) {
+    checks.put(check.name(), check);
+  }
+
+  public boolean hasCheck(final String name) {
+    return checks.containsKey(name);
+  }
+
+  public ChatCheck getCheck(final String name) {
+    return checks.get(name);
+  }
+
+  public void addVariable(final ChatVariable variable) {
     variables.put(variable.name(), variable);
   }
 
-  public void addType(ChatType type) {
+  public void addType(final ChatType type) {
     types.put(type.getName(), type);
   }
 

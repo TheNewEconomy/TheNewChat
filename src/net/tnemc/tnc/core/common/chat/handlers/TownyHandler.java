@@ -1,6 +1,8 @@
 package net.tnemc.tnc.core.common.chat.handlers;
 
 import net.tnemc.tnc.core.common.chat.ChatHandler;
+import net.tnemc.tnc.core.common.chat.checks.towny.KingCheck;
+import net.tnemc.tnc.core.common.chat.checks.towny.MayorCheck;
 import net.tnemc.tnc.core.common.chat.handlers.towny.AllyType;
 import net.tnemc.tnc.core.common.chat.handlers.towny.NationType;
 import net.tnemc.tnc.core.common.chat.handlers.towny.TownType;
@@ -28,6 +30,9 @@ public class TownyHandler extends ChatHandler {
     addVariable(new NationVariable());
     addVariable(new TownVariable());
     addVariable(new TitleVariable());
+
+    addCheck(new KingCheck());
+    addCheck(new MayorCheck());
   }
 
   @Override

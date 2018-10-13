@@ -66,6 +66,13 @@ The chat types for The New King's Chat Handler.
 | Village   |  1.0    | Chat for players in the same village.           |
 | Pact      |  1.0    | Chat for players in the same military pact.     |
 
+The checks for The New King's Chat Handler.
+
+| Name      | Version | Description                                      | 
+|-----------|:-------:|--------------------------------------------------|
+| isking    |  1.1    | Checks if the player is a king of their kingdom. |
+| ismayor   |  1.1    | Checks if the player is a mayor of their village.|
+
 ## Towny
 The variables for Towny's Chat Handler.
 
@@ -82,4 +89,11 @@ The chat types for Towny's Chat Handler.
 | Nation    |  1.0    | Chat for players in the same nation.            |
 | Town      |  1.0    | Chat for players in the same towny.             |
 | Ally      |  1.0    | Chat for players of allied nations.             |
+
+The checks for The New King's Chat Handler.
+
+| Name      | Version | Description                                      | 
+|-----------|:-------:|--------------------------------------------------|
+| isking    |  1.1    | Checks if the player is a king of their nation.  |
+| ismayor   |  1.1    | Checks if the player is a mayor of their town.   |
 

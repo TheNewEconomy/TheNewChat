@@ -155,7 +155,7 @@ public class ChatManager implements Listener {
 
   public String formatMessage(final Player player, Collection<Player> recipients, final String channel, final String message) {
 
-    final String handler = getHandler(channel);
+    String handler = getHandler(channel);
 
     if(handler.equalsIgnoreCase("") || channel.equalsIgnoreCase("general")) {
       String format = parseCoreVariables(player, message, CoreConfigNodes.CORE_GENERAL_CHAT_FORMAT.getString());
@@ -164,6 +164,7 @@ public class ChatManager implements Listener {
       }
       if(!generalHandler.equalsIgnoreCase("core") &&
           handlers.containsKey(generalHandler)) {
+        handler = generalHandler;
         format = handlers.get(generalHandler).parseMessage(player, "general", message, format);
       }
       final Collection<Player> recip = getRecipients(recipients, player,
@@ -174,7 +175,7 @@ public class ChatManager implements Listener {
 
       recipients.clear();
       recipients.addAll(recip);
-      return parseSeparators(format);
+      return parseSeparators(player, handler, format);
     } else {
       ChatEntry entry = chats.get(handler).get(channel);
       String format = parseCoreVariables(player, message, entry.getFormat());
@@ -191,7 +192,7 @@ public class ChatManager implements Listener {
       recipients.clear();
       recipients.addAll(recip);
       format = handlers.get(handler).parseMessage(player, channel, message, format);
-      return parseSeparators(format);
+      return parseSeparators(player, handler, format);
     }
   }
 
@@ -204,14 +205,25 @@ public class ChatManager implements Listener {
     if(sendPlayer) player.sendMessage(format);
   }
 
-  private String parseSeparators(String format) {
+  private String parseSeparators(final Player player, final String handler, String format) {
     Matcher matcher = TheNewChat.instance().getManager().separatorPattern.matcher(format);
     while(matcher.find()) {
       final String total = matcher.group();
       if(matcher.group().contains(":")) {
         String[] split = total.replace("{", "").replace("}", "").split(":");
         if(!split[0].trim().equalsIgnoreCase("")) {
-          format = format.replaceAll(Pattern.quote(total), split[0] + split[1]);
+          if(getHandlers().get(handler).hasCheck(split[0])) {
+            final boolean checked = getHandlers().get(handler).getCheck(split[0]).runCheck(player, total);
+            if(checked) {
+              format = format.replaceAll(Pattern.quote(total), split[1]);
+            } else {
+              if(split.length > 2) {
+                format = format.replaceAll(Pattern.quote(total), split[2]);
+              }
+            }
+          } else {
+            format = format.replaceAll(Pattern.quote(total), split[0] + split[1]);
+          }
         } else {
           format = format.replaceAll(Pattern.quote(total), "");
         }

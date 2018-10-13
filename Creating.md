@@ -63,3 +63,27 @@ From here we may use some of the optional configurations as follows:
     Radius: 20 #The max distance away a player may be and here this channel's chat if Radial is true.
     Permission: "examplechat.chat" #The permission node required to use this channel.
 ```
+
+## Separators
+We support a function we notate as "separators" in TNC. Separators allow you to add optional text after a variable if the
+variable is not empty/whitespace.
+
+Example:
+If you're using the Towny provider and want to output a separator after a $nation variable you could do so using a separator.
+```yaml
+[{$nation: | }$town]$display: $message
+```
+The above format would output "\[\<nation name\> | \<town name\>\]username: message" if $nation is not empty/whitespace. This may be used when you're not sure
+if players will have a nation, but want to use the variable in your chat formatting.
+
+## Checks
+We support a function we notate as "checks" in TNC. These checks allow you to output specific formatting if a check is true,
+and also optionally output formatting for when it is false. Checks are built-in the chat handler, and as before the default
+ones provided by TNC are outlined in [Variables.md](https://github.com/TheNewEconomy/TheNewChat/blob/master/Variables.md).
+
+Example:
+If you're using the Towny provider and want to output a colour code if a player is a king, you'd use the isking check.
+```yaml
+{isking:<blue>:<white>}$display: $message
+```
+The above format would make the player's name blue if they are a king, otherwise white.
