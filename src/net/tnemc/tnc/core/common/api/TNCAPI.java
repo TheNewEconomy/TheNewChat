@@ -23,6 +23,8 @@ public class TNCAPI {
    */
   public static void addHandler(final ChatHandler handler) {
     TheNewChat.instance().getManager().addHandler(handler);
+    TheNewChat.instance().getManager().loadChats();
+    TheNewChat.instance().registerChatCommand();
   }
 
   /**
@@ -34,6 +36,8 @@ public class TNCAPI {
   public static boolean addType(final String handler, final ChatType type) {
     if(TheNewChat.instance().getManager().getHandlers().containsKey(handler)) {
       TheNewChat.instance().getManager().getHandlers().get(handler).addType(type);
+      TheNewChat.instance().getManager().loadChats();
+      TheNewChat.instance().registerChatCommand();
       return true;
     }
     return false;
@@ -56,6 +60,7 @@ public class TNCAPI {
     if(TheNewChat.instance().getManager().getHandlers().containsKey(entry.getHandler().toLowerCase()) &&
         TheNewChat.instance().getManager().getHandlers().get(entry.getHandler()).getType(entry.getType().toLowerCase()) != null) {
       TheNewChat.instance().getManager().addChatEntry(entry);
+      TheNewChat.instance().getManager().loadChats();
       TheNewChat.instance().registerChatCommand();
       return true;
     }

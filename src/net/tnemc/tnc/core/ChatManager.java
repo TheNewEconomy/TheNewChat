@@ -6,7 +6,6 @@ import net.tnemc.tnc.core.common.chat.ChatHandler;
 import net.tnemc.tnc.core.common.chat.ChatVariable;
 import net.tnemc.tnc.core.common.chat.handlers.CoreHandler;
 import net.tnemc.tnc.core.common.chat.handlers.TNKHandler;
-import net.tnemc.tnc.core.common.chat.handlers.TownyHandler;
 import net.tnemc.tnc.core.common.chat.variables.core.DisplayVariable;
 import net.tnemc.tnc.core.common.chat.variables.core.LevelVariable;
 import net.tnemc.tnc.core.common.chat.variables.core.MessageVariable;
@@ -90,10 +89,6 @@ public class ChatManager implements Listener {
     if(Bukkit.getPluginManager().isPluginEnabled("TheNewKings")) {
       addHandler(new TNKHandler());
     }
-
-    if(Bukkit.getPluginManager().isPluginEnabled("Towny")) {
-      addHandler(new TownyHandler());
-    }
   }
 
   public void loadCoreVariables() {
@@ -117,18 +112,20 @@ public class ChatManager implements Listener {
         final String handler = TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Handler");
         final String type = TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Type");
 
-        ChatEntry chatConfig = new ChatEntry(handler, type);
+        if(handlers.containsKey(handler) && handlers.get(handler).getTypes().containsKey(type)) {
+          ChatEntry chatConfig = new ChatEntry(handler, type);
 
-        List<String> commands = TheNewChat.instance().getChatsConfiguration().getStringList(baseNode + "." + entry + ".Commands");
-        chatConfig.setCommands(commands.toArray(new String[commands.size()]));
-        chatConfig.setIgnorable(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".Ignorable", true));
-        chatConfig.setWorld(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".WorldBased", false));
-        chatConfig.setRadial(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".Radial", false));
-        chatConfig.setRadius(TheNewChat.instance().getChatsConfiguration().getInt(baseNode + "." + entry + ".Radius", 20));
-        chatConfig.setPermission(TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Permission", ""));
-        chatConfig.setFormat(TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Format", handlers.get(handler).getType(type).getDefaultFormat()));
+          List<String> commands = TheNewChat.instance().getChatsConfiguration().getStringList(baseNode + "." + entry + ".Commands");
+          chatConfig.setCommands(commands.toArray(new String[commands.size()]));
+          chatConfig.setIgnorable(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".Ignorable", true));
+          chatConfig.setWorld(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".WorldBased", false));
+          chatConfig.setRadial(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".Radial", false));
+          chatConfig.setRadius(TheNewChat.instance().getChatsConfiguration().getInt(baseNode + "." + entry + ".Radius", 20));
+          chatConfig.setPermission(TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Permission", ""));
+          chatConfig.setFormat(TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Format", handlers.get(handler).getType(type).getDefaultFormat()));
 
-        addChatEntry(chatConfig);
+          addChatEntry(chatConfig);
+        }
       }
     }
   }

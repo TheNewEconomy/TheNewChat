@@ -92,8 +92,9 @@ public class ChatCommand extends TNECommand {
       if(channel != null) {
 
         final String handler = plugin.getManager().getHandler(channel);
-        if(channel.equalsIgnoreCase("general") && !getPlayer(sender).hasPermission("tnc.general") ||
-            !plugin.getManager().getHandlers().get(handler).getType(channel.toLowerCase()).canChat(getPlayer(sender))) {
+        if(plugin.getManager().getHandlers().get(handler) == null && !getPlayer(sender).hasPermission("tnc.general") ||
+            channel.equalsIgnoreCase("general") && !getPlayer(sender).hasPermission("tnc.general") ||
+            plugin.getManager().getHandlers().get(handler) != null && !plugin.getManager().getHandlers().get(handler).getType(channel.toLowerCase()).canChat(getPlayer(sender))) {
           sender.sendMessage(ChatColor.RED + "Unable to use the specified channel.");
           return false;
         }

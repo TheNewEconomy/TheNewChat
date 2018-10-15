@@ -1,8 +1,8 @@
 package net.tnemc.tnc.core.common.chat.handlers;
 
 import net.tnemc.tnc.core.common.chat.ChatHandler;
-import net.tnemc.tnc.core.common.chat.checks.towny.KingCheck;
-import net.tnemc.tnc.core.common.chat.checks.towny.MayorCheck;
+import net.tnemc.tnc.core.common.chat.checks.TNK.KingCheck;
+import net.tnemc.tnc.core.common.chat.checks.TNK.MayorCheck;
 import net.tnemc.tnc.core.common.chat.handlers.tnk.KingdomType;
 import net.tnemc.tnc.core.common.chat.handlers.tnk.PactType;
 import net.tnemc.tnc.core.common.chat.handlers.tnk.VillageType;
