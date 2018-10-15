@@ -7,4 +7,4 @@ api-version: 1.13
 
 #Plugin Data
 main: net.tnemc.tnc.core.TheNewChat
-softdepend: [TheNewKings, PlaceholderAPI]
+softdepend: [PlaceholderAPI]

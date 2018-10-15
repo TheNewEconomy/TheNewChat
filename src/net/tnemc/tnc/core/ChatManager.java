@@ -5,7 +5,6 @@ import net.tnemc.tnc.core.common.chat.ChatEntry;
 import net.tnemc.tnc.core.common.chat.ChatHandler;
 import net.tnemc.tnc.core.common.chat.ChatVariable;
 import net.tnemc.tnc.core.common.chat.handlers.CoreHandler;
-import net.tnemc.tnc.core.common.chat.handlers.TNKHandler;
 import net.tnemc.tnc.core.common.chat.variables.core.DisplayVariable;
 import net.tnemc.tnc.core.common.chat.variables.core.LevelVariable;
 import net.tnemc.tnc.core.common.chat.variables.core.MessageVariable;
@@ -88,10 +87,6 @@ public class ChatManager implements Listener {
 
   public void loadHandlers() {
     addHandler(new CoreHandler());
-
-    if(Bukkit.getPluginManager().isPluginEnabled("TheNewKings")) {
-      addHandler(new TNKHandler());
-    }
   }
 
   public void loadCoreVariables() {
