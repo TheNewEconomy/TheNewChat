@@ -209,9 +209,9 @@ public class ChatManager implements Listener {
     if(sendPlayer) player.sendMessage(format);
   }
 
-  private String parseReplacements(final Player player, final String handler, String format) {
+  private String parseReplacements(String format) {
     for(Map.Entry<String, String> entry : replacements.entrySet()) {
-      format = format.replaceAll(entry.getKey(), entry.getValue());
+      format = format.replaceAll(entry.getKey(), Pattern.quote(entry.getValue()));
     }
     return format;
   }
@@ -240,7 +240,7 @@ public class ChatManager implements Listener {
         }
       }
     }
-    return parseReplacements(player, handler, format);
+    return parseReplacements(format);
   }
 
   private String parseCoreVariables(final Player player, String message, String format) {
