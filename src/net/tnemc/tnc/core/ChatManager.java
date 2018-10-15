@@ -56,6 +56,8 @@ public class ChatManager implements Listener {
 
   private Map<String, String> commands = new HashMap<>();
 
+  private Map<String, String> replacements = new HashMap<>();
+
   private Map<String, String> channels = new HashMap<>();
   private Map<String, HashSet<String>> ignored = new HashMap<>();
 
@@ -74,6 +76,7 @@ public class ChatManager implements Listener {
 
     loadCoreVariables();
     loadHandlers();
+    loadReplacements();
     loadChats();
   }
 
@@ -98,6 +101,15 @@ public class ChatManager implements Listener {
     coreVariables.put("$username", new UsernameVariable());
     coreVariables.put("$world", new WorldVariable());
     coreVariables.put("$xp", new XPVariable());
+  }
+
+  public void loadReplacements() {
+    for(String s : TheNewChat.instance().getChatsConfiguration().getStringList("Replacements")) {
+      final String[] split = s.split(Pattern.quote("="));
+      if(split.length > 1) {
+        replacements.put(split[0], split[1]);
+      }
+    }
   }
 
   public void loadChats() {
@@ -202,6 +214,13 @@ public class ChatManager implements Listener {
     if(sendPlayer) player.sendMessage(format);
   }
 
+  private String parseReplacements(final Player player, final String handler, String format) {
+    for(Map.Entry<String, String> entry : replacements.entrySet()) {
+      format = format.replaceAll(entry.getKey(), entry.getValue());
+    }
+    return format;
+  }
+
   private String parseSeparators(final Player player, final String handler, String format) {
     Matcher matcher = TheNewChat.instance().getManager().separatorPattern.matcher(format);
     while(matcher.find()) {
@@ -226,7 +245,7 @@ public class ChatManager implements Listener {
         }
       }
     }
-    return format;
+    return parseReplacements(player, handler, format);
   }
 
   private String parseCoreVariables(final Player player, String message, String format) {
