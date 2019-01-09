@@ -4,6 +4,7 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.tnemc.tnc.core.common.chat.ChatEntry;
 import net.tnemc.tnc.core.common.chat.ChatHandler;
 import net.tnemc.tnc.core.common.chat.ChatVariable;
+import net.tnemc.tnc.core.common.chat.db.IgnoredChannel;
 import net.tnemc.tnc.core.common.chat.handlers.CoreHandler;
 import net.tnemc.tnc.core.common.chat.variables.core.DisplayVariable;
 import net.tnemc.tnc.core.common.chat.variables.core.LevelVariable;
@@ -27,7 +28,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,7 +58,6 @@ public class ChatManager implements Listener {
   private Map<String, String> replacements = new HashMap<>();
 
   private Map<String, String> channels = new HashMap<>();
-  private Map<String, HashSet<String>> ignored = new HashMap<>();
 
   /**
    * The core variables used
@@ -255,9 +254,10 @@ public class ChatManager implements Listener {
                                            final String permission, final String channel) {
     Collection<Player> newRecipients = new HashSet<>();
 
+    TheNewChat.saveManager().open();
     for(Player p : recipients) {
       if(!p.hasPermission(permission)) continue;
-      if(ignored.containsKey(channel) && ignored.get(channel).contains(p.getUniqueId().toString())) continue;
+      if(IgnoredChannel.exists(p.getUniqueId(), channel)) continue;
       if(radial) {
         if(p.getLocation().distance(player.getLocation()) <= radius) continue;
       }
@@ -267,6 +267,7 @@ public class ChatManager implements Listener {
       }
       newRecipients.add(p);
     }
+    TheNewChat.saveManager().close();
     return newRecipients;
   }
 
@@ -338,26 +339,6 @@ public class ChatManager implements Listener {
   public void addHandler(ChatHandler handler) {
     handlers.put(handler.getName(), handler);
     handlersMap.put(handler.getTypes().keySet(), handler.getName());
-  }
-
-  public void ignore(final UUID id, String channel) {
-    if(ignored.containsKey(channel)) {
-      ignored.get(channel).add(id.toString());
-    }
-    HashSet<String> ignoring = new HashSet<>();
-    ignoring.add(id.toString());
-    ignored.put(channel, ignoring);
-  }
-
-  public Map<String, HashSet<String>> getIgnored() {
-    return ignored;
-  }
-
-  public boolean ignoring(final UUID id, String channel) {
-    if(ignored.containsKey(channel)) {
-      return ignored.get(channel).contains(id.toString());
-    }
-    return false;
   }
 
   public LinkedHashMap<String, ChatHandler> getHandlers() {

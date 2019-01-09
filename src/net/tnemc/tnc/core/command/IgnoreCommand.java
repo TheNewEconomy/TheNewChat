@@ -1,7 +1,9 @@
 package net.tnemc.tnc.core.command;
 
 import net.tnemc.tnc.core.TheNewChat;
+import net.tnemc.tnc.core.common.chat.db.IgnoredChannel;
 import net.tnemc.tnc.core.common.configuration.CoreConfigNodes;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -29,7 +31,7 @@ public class IgnoreCommand extends TNECommand {
   @Override
   public String[] getAliases() {
     return new String[] {
-        "ignorec", "igc"
+        "ignorec", "igc", "leave"
     };
   }
 
@@ -53,27 +55,31 @@ public class IgnoreCommand extends TNECommand {
   @Override
   public boolean execute(CommandSender sender, String command, String[] arguments) {
     if(arguments.length > 0) {
-      final UUID id = getPlayer(sender).getUniqueId();
-      if(plugin.getManager().getCommands().values().contains(arguments[0]) || arguments[0].equalsIgnoreCase("general")) {
-        final String handler = plugin.getManager().getHandler(arguments[0]);
-        boolean ignorable = (arguments[0].equalsIgnoreCase("general"))? CoreConfigNodes.CORE_GENERAL_CHAT_IGNORABLE.getBoolean() :
-            plugin.getManager().getChats().get(handler).get(arguments[0]).isIgnorable();
-        if(ignorable) {
-          if(!plugin.getManager().ignoring(id, arguments[0])) {
-            plugin.getManager().ignore(id, arguments[0]);
-            sender.sendMessage(ChatColor.GOLD + "Now ignoring channel: " + arguments[0] + ".");
-            return true;
-          } else {
-            plugin.getManager().getIgnored().get(arguments[0]).remove(id.toString());
+      Bukkit.getScheduler().runTaskAsynchronously(TheNewChat.instance(), ()->{
+        final UUID id = getPlayer(sender).getUniqueId();
+        if(plugin.getManager().getCommands().values().contains(arguments[0]) || arguments[0].equalsIgnoreCase("general")) {
+          final String handler = plugin.getManager().getHandler(arguments[0]);
+          boolean ignorable = (arguments[0].equalsIgnoreCase("general"))? CoreConfigNodes.CORE_GENERAL_CHAT_IGNORABLE.getBoolean() :
+              plugin.getManager().getChats().get(handler).get(arguments[0]).isIgnorable();
+          if(ignorable) {
+            TheNewChat.saveManager().open();
+            if(!IgnoredChannel.exists(id, arguments[0])) {
+              IgnoredChannel.add(id, arguments[0]);
+              sender.sendMessage(ChatColor.GOLD + "Now ignoring channel: " + arguments[0] + ".");
+              TheNewChat.saveManager().close();
+              return;
+            }
+            IgnoredChannel.delete(id, arguments[0]);
             sender.sendMessage(ChatColor.GOLD + "No longer ignoring channel: " + arguments[0] + ".");
-            return true;
+            TheNewChat.saveManager().close();
+            return;
           }
+          sender.sendMessage(ChatColor.RED + "Cannot ignore that channel.");
+          return;
         }
-        sender.sendMessage(ChatColor.RED + "Cannot ignore that channel.");
-        return false;
-      }
-      sender.sendMessage(ChatColor.RED + "Invalid channel.");
-      return false;
+        sender.sendMessage(ChatColor.RED + "Invalid channel.");
+        return;
+      });
     }
     help(sender);
     return false;

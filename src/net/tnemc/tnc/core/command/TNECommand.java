@@ -1,7 +1,7 @@
 package net.tnemc.tnc.core.command;
 
 import net.tnemc.tnc.core.TheNewChat;
-import net.tnemc.tnk.core.utils.Message;
+import net.tnemc.tnc.core.utils.Message;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

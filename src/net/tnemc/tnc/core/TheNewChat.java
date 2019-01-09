@@ -5,6 +5,8 @@ import net.tnemc.tnc.core.command.CommandManager;
 import net.tnemc.tnc.core.command.IgnoreCommand;
 import net.tnemc.tnc.core.command.ReloadCommand;
 import net.tnemc.tnc.core.command.TNECommand;
+import net.tnemc.tnc.core.common.chat.db.SaveManager;
+import net.tnemc.tnc.core.common.chat.db.Version;
 import net.tnemc.tnc.core.common.configuration.ConfigurationEntry;
 import net.tnemc.tnc.core.common.configuration.CoreConfigNodes;
 import net.tnemc.tnc.core.utils.FileMgmt;
@@ -45,6 +47,9 @@ public class TheNewChat extends JavaPlugin {
 
   private File chatsFile;
   private FileConfiguration chatsConfiguration;
+  private String version = "0.0.1.0";
+
+  private SaveManager saveManager;
 
   public void onLoad() {
     instance = this;
@@ -61,6 +66,23 @@ public class TheNewChat extends JavaPlugin {
 
     initializeConfigurations();
     loadConfigurations();
+
+    try {
+      new File(getDataFolder(), "TheNewChat.db").createNewFile();
+    } catch(IOException ignore) {
+    }
+
+    saveManager = new SaveManager();
+
+    saveManager.createTables();
+    saveManager.open();
+    if(Version.informationExists()) {
+      if(Version.outdated()) {
+        saveManager.updateTables(version);
+        Version.add(version);
+      }
+    }
+    saveManager.close();
 
     this.manager = new ChatManager(CoreConfigNodes.CORE_GENERAL_CHAT_HANDLER.getString());
     commandManager = new CommandManager();
@@ -161,5 +183,13 @@ public class TheNewChat extends JavaPlugin {
 
   FileConfiguration getChatsConfiguration() {
     return chatsConfiguration;
+  }
+
+  public String getVersion() {
+    return version;
+  }
+
+  public static SaveManager saveManager() {
+    return instance().saveManager;
   }
 }
