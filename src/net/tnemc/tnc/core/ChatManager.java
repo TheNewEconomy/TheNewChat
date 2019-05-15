@@ -107,22 +107,26 @@ public class ChatManager implements Listener {
   }
 
   public void loadChats() {
+    System.out.println("Loading Chats");
     final String baseNode = "Chats";
     if(TheNewChat.instance().getChatsConfiguration().contains(baseNode)) {
       Set<String> chatConfigs = TheNewChat.instance().getChatsConfiguration().getConfigurationSection(baseNode).getKeys(false);
       for(String entry : chatConfigs) {
+        System.out.println("Loading Chat " + entry);
         if(!TheNewChat.instance().getChatsConfiguration().contains(baseNode + "." + entry + ".Handler") ||
             !TheNewChat.instance().getChatsConfiguration().contains(baseNode + "." + entry + ".Type")) {
           continue;
         }
-        final String handler = TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Handler");
-        final String type = TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Type");
+        final String handler = TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Handler").toLowerCase();
+        final String type = TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Type").toLowerCase();
 
+        System.out.println("Loading Chat Handler " + entry);
         if(handlers.containsKey(handler) && handlers.get(handler).getTypes().containsKey(type)) {
+          System.out.println("Loading Chat Entry " + entry);
           ChatEntry chatConfig = new ChatEntry(handler, type);
 
           List<String> commands = TheNewChat.instance().getChatsConfiguration().getStringList(baseNode + "." + entry + ".Commands");
-          chatConfig.setCommands(commands.toArray(new String[commands.size()]));
+          chatConfig.setCommands(commands.toArray(new String[0]));
           chatConfig.setIgnorable(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".Ignorable", true));
           chatConfig.setWorld(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".WorldBased", false));
           chatConfig.setRadial(TheNewChat.instance().getChatsConfiguration().getBoolean(baseNode + "." + entry + ".Radial", false));
@@ -131,6 +135,7 @@ public class ChatManager implements Listener {
           chatConfig.setFormat(TheNewChat.instance().getChatsConfiguration().getString(baseNode + "." + entry + ".Format", handlers.get(handler).getType(type).getDefaultFormat()));
 
           addChatEntry(chatConfig);
+          System.out.println("Loading Chat Finalization " + entry);
         }
       }
     }
@@ -337,8 +342,8 @@ public class ChatManager implements Listener {
   }
 
   public void addHandler(ChatHandler handler) {
-    handlers.put(handler.getName(), handler);
-    handlersMap.put(handler.getTypes().keySet(), handler.getName());
+    handlers.put(handler.getName().toLowerCase(), handler);
+    handlersMap.put(handler.getTypes().keySet(), handler.getName().toLowerCase());
   }
 
   public LinkedHashMap<String, ChatHandler> getHandlers() {

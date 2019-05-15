@@ -16,7 +16,7 @@ import java.util.Collection;
  */
 public class BasicType extends ChatType {
   public BasicType() {
-    super("basic", "<white>[<blue>$display<white>]: <yellow>$message");
+    super("Basic", "<white>[<blue>$display<white>]: <yellow>$message");
   }
 
   @Override

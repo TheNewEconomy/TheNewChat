@@ -133,13 +133,12 @@ public class TheNewChat extends JavaPlugin {
   }
 
   public void registerChatCommand() {
-    List<String> commands = new ArrayList<>();
-    commands.addAll(manager.getCommands().keySet());
+    List<String> commands = new ArrayList<>(manager.getCommands().keySet());
     commands.add("gc");
     commands.add("generalchat");
     commands.add("generalchat");
     commands.add("tnc");
-    final String[] commandsArray = commands.toArray(new String[commands.size()]);
+    final String[] commandsArray = commands.toArray(new String[0]);
 
     registerCommand(commandsArray, new ChatCommand(this, commandsArray));
   }

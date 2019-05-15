@@ -98,7 +98,7 @@
         </repository>
         <repository>
             <id>articdive-repo</id>
-            <url>https://nexus.articdive.de/repository/maven-releases</url>
+            <url>http://maven.elmakers.com/repository</url>
         </repository>
         <repository>
             <id>placeholderapi</id>
@@ -148,7 +148,7 @@
         <dependency>
             <groupId>com.palmergames</groupId>
             <artifactId>Towny</artifactId>
-            <version>0.93.0.3</version>
+            <version>0.89.2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

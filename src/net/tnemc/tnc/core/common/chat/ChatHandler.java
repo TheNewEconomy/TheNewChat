@@ -49,11 +49,11 @@ public abstract class ChatHandler {
   }
 
   public void addType(final ChatType type) {
-    types.put(type.getName(), type);
+    types.put(type.getName().toLowerCase(), type);
   }
 
   public ChatType getType(String name) {
-    return types.get(name);
+    return types.get(name.toLowerCase());
   }
 
   public Map<String, ChatType> getTypes() {

@@ -21,6 +21,6 @@ public class CoreHandler extends ChatHandler {
 
   @Override
   public String getName() {
-    return "core";
+    return "Core";
   }
 }
