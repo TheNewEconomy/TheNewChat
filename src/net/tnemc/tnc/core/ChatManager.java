@@ -158,7 +158,8 @@ public class ChatManager implements Listener {
     if(!permission.equalsIgnoreCase("") && !event.getPlayer().hasPermission(permission)) {
       event.setCancelled(true);
     }
-    event.setFormat(formatMessage(event.getPlayer(), recipients, channel, event.getMessage()));
+    event.setMessage(formatMessage(event.getPlayer(), recipients, channel, event.getMessage()));
+    event.setFormat("%2$s");
   }
 
   public String formatMessage(final Player player, Collection<Player> recipients, final String channel, final String message) {
@@ -167,7 +168,7 @@ public class ChatManager implements Listener {
 
     if(handler.equalsIgnoreCase("") || channel.equalsIgnoreCase("general")) {
       String format = parseCoreVariables(player, message, CoreConfigNodes.CORE_GENERAL_CHAT_FORMAT.getString());
-      if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+      if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI") && PlaceholderAPI.containsPlaceholders(format)) {
         format = PlaceholderAPI.setPlaceholders(player, format);
       }
       if(!generalHandler.equalsIgnoreCase("core") &&

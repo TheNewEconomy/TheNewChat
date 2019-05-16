@@ -47,7 +47,7 @@ public class TheNewChat extends JavaPlugin {
 
   private File chatsFile;
   private FileConfiguration chatsConfiguration;
-  private String version = "0.0.1.0";
+  private String version = "1.5.0.0";
 
   private SaveManager saveManager;
 
