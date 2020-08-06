@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>net.tnemc.tnc</groupId>
+    <groupId>net.tnemc</groupId>
     <artifactId>TheNewChat</artifactId>
-    <version>1.5.0.0</version>
+    <version>1.5.1.0</version>
     <name>TheNewChat</name>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -60,6 +60,17 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>codemc-releases</id>
+            <url>https://repo.codemc.io/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>codemc-snapshots</id>
+            <url>https://repo.codemc.io/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <organization>
         <name>The New Economy</name>
         <url>https://tnemc.net</url>
@@ -91,14 +102,6 @@
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>reserve-repo</id>
-            <url>https://dl.bintray.com/theneweconomy/java/</url>
-        </repository>
-        <repository>
-            <id>articdive-repo</id>
-            <url>http://maven.elmakers.com/repository</url>
         </repository>
         <repository>
             <id>placeholderapi</id>
@@ -137,18 +140,6 @@
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
             <version>1.13.1-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>net.tnemc</groupId>
-            <artifactId>Reserve</artifactId>
-            <version>0.1.0.11</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.palmergames</groupId>
-            <artifactId>Towny</artifactId>
-            <version>0.89.2.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
